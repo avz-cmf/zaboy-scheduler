@@ -1,9 +1,9 @@
 {
-    "name": "avz-cmf/zaboy-sheduler",
+    "name": "avz-cmf/zaboy-scheduler",
     "description": "Unlimited ticker that works with tact less than minute",
     "type": "library",
     "license": "GPL-3.0",
-    "homepage": "https://github.com/avz-cmf/zaboy-sheduler",
+    "homepage": "https://github.com/avz-cmf/zaboy-scheduler",
     "support": {
     },
     "require": {
