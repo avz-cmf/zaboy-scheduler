@@ -3,6 +3,7 @@
 namespace zaboy\scheduler\Callback\Factory;
 
 use Interop\Container\ContainerInterface;
+use zaboy\scheduler\Callback\CallbackException;
 
 /**
  * The abstract factory for all types of callbaks
@@ -21,7 +22,11 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
      */
     public function canCreate(ContainerInterface $container, $requestedName)
     {
-        $config = $container->get('config')['callback'];
+        $config = $container->get('config');
+        if (!isset($config['callback'])) {
+            return false;
+        }
+        $config = $config['callback'];
         if (!isset($config[$requestedName]['class'])) {
             return false;
         }
@@ -36,10 +41,24 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $container->get('config')['callback'];
+        $config = $container->get('config');
+        if (!isset($config['callback'])) {
+            throw new CallbackException("The config hasn't the part \"callback\" in the application config.");
+        }
+        $config = $config['callback'];
+        if (!isset($config[$requestedName])) {
+            throw new CallbackException("The specified service name for callback \"{$requestedName}\" was not found");
+        }
         $serviceConfig = $config[$requestedName];
+        if (!isset($serviceConfig['class'])) {
+            throw new CallbackException("Te necessary parameter \"class\" for initializing the callback service was not found");
+        }
         $requestedClassName = $serviceConfig['class'];
-        $params = $serviceConfig['params'];
+        if (!isset($serviceConfig['params'])) {
+            $params = [];
+        } else {
+            $params = $serviceConfig['params'];
+        }
         return new $requestedClassName($params);
     }
 }
