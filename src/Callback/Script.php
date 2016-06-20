@@ -37,7 +37,7 @@ class Script implements CallbackInterface
         } else {
             $filename = getcwd() . DIRECTORY_SEPARATOR . $script;
             if (!is_file($filename)) {
-                throw new CallbackException("Specified script \"$script\" does not exist in path \"" . getcwd() . "\"");
+                throw new CallbackException("Specified script \"{$script}\" does not exist in path \"" . getcwd() . "\"");
             }
             $this->script = $filename;
         }

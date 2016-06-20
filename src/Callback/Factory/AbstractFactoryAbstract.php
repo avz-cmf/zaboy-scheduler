@@ -41,18 +41,10 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $container->get('config');
-        if (!isset($config['callback'])) {
-            throw new CallbackException("The config hasn't the part \"callback\" in the application config.");
-        }
-        $config = $config['callback'];
-        if (!isset($config[$requestedName])) {
-            throw new CallbackException("The specified service name for callback \"{$requestedName}\" was not found");
-        }
+        $this->checkNecessaryParametersOfConfig($container, $requestedName);
+
+        $config = $container->get('config')['callback'];
         $serviceConfig = $config[$requestedName];
-        if (!isset($serviceConfig['class'])) {
-            throw new CallbackException("Te necessary parameter \"class\" for initializing the callback service was not found");
-        }
         $requestedClassName = $serviceConfig['class'];
         if (!isset($serviceConfig['params'])) {
             $params = [];
@@ -60,5 +52,19 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
             $params = $serviceConfig['params'];
         }
         return new $requestedClassName($params);
+    }
+
+    protected function checkNecessaryParametersOfConfig(ContainerInterface $container, $requestedName)
+    {
+        $config = $container->get('config');
+        if (!isset($config['callback'])) {
+            throw new CallbackException("The config hasn't the part \"callback\" in the application config.");
+        }
+        if (!isset($config['callback'][$requestedName])) {
+            throw new CallbackException("The specified service name for callback \"{$requestedName}\" was not found");
+        }
+        if (!isset($config['callback'][$requestedName]['class'])) {
+            throw new CallbackException("Te necessary parameter \"class\" for initializing the callback service was not found");
+        }
     }
 }

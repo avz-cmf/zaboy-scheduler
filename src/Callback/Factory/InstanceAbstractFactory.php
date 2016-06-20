@@ -30,6 +30,8 @@ class InstanceAbstractFactory extends AbstractFactoryAbstract
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
+        $this->checkNecessaryParametersOfConfig($container, $requestedName);
+
         $config = $container->get('config')['callback'];
         $serviceConfig = $config[$requestedName];
         // Class of callback object, will be 'zaboy\scheduler\Callback\Instance'
