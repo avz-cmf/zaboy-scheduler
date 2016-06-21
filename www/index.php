@@ -11,14 +11,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Stratigility\Http\ResponseInterface;
 use Zend\Stratigility\Next;
 
-$callbackMiddleware = function (
+$testCallbackMiddleware = function (
     ServerRequestInterface $request,
     ResponseInterface $response,
     Next $next
 ) {
     $response->withStatus(200);
-    $response->getBody()->write(json_encode("I'm HttpCallback simple response!"));
+    $body = $request->getBody()->__toString();
+
+    $response->getBody()->write($body);
     $response->withHeader('X-Path', $request->getUri()->getPath());
+
     if ($next) {
         return $next($request, $response);
     }
@@ -26,7 +29,7 @@ $callbackMiddleware = function (
 };
 
 $app = new MiddlewarePipe();
-$app->pipe('/api/callback', $callbackMiddleware);
+$app->pipe('/api/test/callback', $testCallbackMiddleware);
 
 $server = Server::createServer($app, $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
 $server->listen();

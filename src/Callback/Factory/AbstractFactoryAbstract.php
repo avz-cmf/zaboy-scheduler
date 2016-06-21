@@ -6,7 +6,7 @@ use Interop\Container\ContainerInterface;
 use zaboy\scheduler\Callback\CallbackException;
 
 /**
- * The abstract factory for all types of callbaks
+ * The abstract factory for all types of callbacks
  *
  * Class AbstractFactoryAbstract
  * @package zaboy\scheduler\Callback\Factory
@@ -41,7 +41,7 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $this->checkNecessaryParametersOfConfig($container, $requestedName);
+        $this->checkNecessaryParametersInConfig($container, $requestedName);
 
         $config = $container->get('config')['callback'];
         $serviceConfig = $config[$requestedName];
@@ -54,7 +54,14 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
         return new $requestedClassName($params);
     }
 
-    protected function checkNecessaryParametersOfConfig(ContainerInterface $container, $requestedName)
+    /**
+     * Checks existing of necessary parameters in
+     *
+     * @param ContainerInterface $container
+     * @param $requestedName
+     * @throws CallbackException
+     */
+    protected function checkNecessaryParametersInConfig(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
         if (!isset($config['callback'])) {

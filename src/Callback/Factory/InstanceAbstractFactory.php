@@ -21,7 +21,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * ]
  * </code>
  *
- * Class ScriptAbstractFactory
+ * Class InstanceAbstractFactory
  * @package zaboy\scheduler\Callback\Factory
  */
 class InstanceAbstractFactory extends AbstractFactoryAbstract
@@ -30,7 +30,7 @@ class InstanceAbstractFactory extends AbstractFactoryAbstract
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $this->checkNecessaryParametersOfConfig($container, $requestedName);
+        $this->checkNecessaryParametersInConfig($container, $requestedName);
 
         $config = $container->get('config')['callback'];
         $serviceConfig = $config[$requestedName];

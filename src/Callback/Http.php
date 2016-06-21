@@ -9,20 +9,63 @@ use Zend\Json\Json;
 
 class Http implements CallbackInterface
 {
-    const DEFAULT_REQUEST_TYPE = Request::METHOD_GET;
+    /**
+     * Request method by default
+     */
+    const DEFAULT_REQUEST_METHOD = Request::METHOD_GET;
 
+    /**
+     * URL to send request
+     *
+     * Must be real url, f.e. http://some.domen.org
+     *
+     * @var string url
+     */
     protected $url;
 
+    /**
+     * Options which will be passed to request
+     *
+     * @var array
+     */
     protected $requestOptions = [];
 
+    /**
+     * Login for http-authorization if need
+     *
+     * @var string
+     */
     protected $login;
 
+    /**
+     * Password for http-authorization if need
+     *
+     * @var string
+     */
     protected $password;
 
+    /**
+     * Method of request
+     *
+     * Valid values may be found in Zend\Http\Request
+     *
+     * @see Zend\Http\Request
+     * @var string
+     */
     protected $requestMethod;
 
+    /**
+     * Headers which will be passed to request
+     *
+     * @var array
+     */
     protected $requestHeaders = [];
 
+    /**
+     * {@inherit}
+     *
+     * {@inherit}
+     */
     public function __construct(array $params = [])
     {
         // The parameters of request: url and options for request (f.e. timeout)
@@ -50,7 +93,7 @@ class Http implements CallbackInterface
             }
         }
         if (!isset($params['method'])) {
-            $params['method'] = self::DEFAULT_REQUEST_TYPE;
+            $params['method'] = self::DEFAULT_REQUEST_METHOD;
         }
         $this->requestMethod = $params['method'];
         if (isset($params['headers'])) {
@@ -58,6 +101,11 @@ class Http implements CallbackInterface
         }
     }
 
+    /**
+     * {@inherit}
+     *
+     * {@inherit}
+     */
     public function call(array $options = [])
     {
         /** @var Client $httpClient */
@@ -76,6 +124,8 @@ class Http implements CallbackInterface
     }
 
     /**
+     * Creates and configures a http client
+     *
      * @return Client
      */
     protected function initHttpClient()
@@ -89,7 +139,15 @@ class Http implements CallbackInterface
         return $httpClient;
     }
 
-
+    /**
+     * Encodes $data to json string
+     *
+     * TODO: Встречается в нескольких местах, требуется рефакторинг
+     *
+     * @param $data
+     * @return string
+     * @throws CallbackException
+     */
     protected function jsonEncode($data)
     {
         json_encode(null); // Clear json_last_error()
@@ -104,6 +162,15 @@ class Http implements CallbackInterface
         return $result;
     }
 
+    /**
+     * Decodes json string to array or object
+     *
+     * TODO: Встречается в нескольких местах, требуется рефакторинг
+     *
+     * @param $data
+     * @return mixed
+     * @throws CallbackException
+     */
     protected function jsonDecode($data)
     {
         json_encode(null); // Clear json_last_error()

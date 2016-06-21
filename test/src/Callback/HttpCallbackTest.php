@@ -18,9 +18,14 @@ class HttpCallbackTest extends \PHPUnit_Framework_TestCase
 
     public function test_call()
     {
+        $options = [
+            'key1' => 'val1',
+            'key2' => 'val2'
+        ];
+        $result = $this->callback->call($options);
         $this->assertEquals(
-            "I'm HttpCallback simple response!",
-            $this->callback->call([])
+            $options,
+            $result
         );
     }
 }
