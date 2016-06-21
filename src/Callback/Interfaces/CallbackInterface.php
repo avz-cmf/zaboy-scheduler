@@ -23,7 +23,7 @@ interface CallbackInterface
      * Call the callback.
      *
      * @param array $options - a dynamic data for passing to the callback
-     * @return void
+     * @return mixed
      */
     public function call(array $options = []);
 }

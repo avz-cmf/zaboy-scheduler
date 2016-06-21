@@ -3,7 +3,6 @@
 namespace zaboy\scheduler\Callback\Factory;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Creates if can and returns an instance of class 'Callback\Instance'

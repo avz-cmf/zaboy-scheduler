@@ -71,7 +71,7 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
             throw new CallbackException("The specified service name for callback \"{$requestedName}\" was not found");
         }
         if (!isset($config['callback'][$requestedName]['class'])) {
-            throw new CallbackException("Te necessary parameter \"class\" for initializing the callback service was not found");
+            throw new CallbackException("The necessary parameter \"class\" for initializing the callback service was not found");
         }
     }
 }
