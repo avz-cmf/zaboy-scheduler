@@ -2,24 +2,24 @@
 
 namespace zaboy\scheduler\Callback;
 
+use Interop\Container\ContainerInterface;
 use zaboy\scheduler\Callback\Interfaces\CallbackInterface;
 use Zend\ServiceManager\Exception;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
-class CallbackManager implements ServiceLocatorInterface
+class CallbackManager implements ContainerInterface
 {
     const SERVICE_NAME = 'callback_manager';
 
-    /** @var  \Zend\ServiceManager\ServiceManager $serviceManager */
-    protected $serviceManager;
+    /** @var  \Zend\ServiceManager\ServiceManager $container */
+    protected $container;
 
     /**
      * CallbackManager constructor.
-     * @param ServiceLocatorInterface $serviceManager
+     * @param ContainerInterface $container
      */
-    public function __construct(ServiceLocatorInterface $serviceManager)
+    public function __construct(ContainerInterface $container)
     {
-        $this->serviceManager = $serviceManager;
+        $this->container = $container;
     }
 
     /**
@@ -32,7 +32,7 @@ class CallbackManager implements ServiceLocatorInterface
         if (!$this->has($name)) {
             throw new CallbackException("The specified service with name \"{$name}\" does not exist");
         }
-        $instance = $this->serviceManager->get($name);
+        $instance = $this->container->get($name);
         if (!$instance instanceof CallbackInterface) {
             throw new CallbackException("The instance of specified service is not Callback");
         }
@@ -46,7 +46,7 @@ class CallbackManager implements ServiceLocatorInterface
      */
     public function has($name)
     {
-        $config = $this->serviceManager->get('config');
+        $config = $this->container->get('config');
         return (isset($config['callback'][$name]));
     }
 }
