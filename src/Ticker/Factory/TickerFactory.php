@@ -3,7 +3,7 @@
 namespace zaboy\scheduler\Ticker\Factory;
 
 use Interop\Container\ContainerInterface;
-use zaboy\scheduler\FactoryAbstract;
+use zaboy\rest\FactoryAbstract;
 use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\CallbackManager;
 use zaboy\scheduler\Ticker\Ticker;
@@ -37,7 +37,7 @@ class TickerFactory extends FactoryAbstract
      *
      * {@inherit}
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config')[self::TICKER_SERVICE_NAME];
 

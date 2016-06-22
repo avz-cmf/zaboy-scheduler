@@ -3,7 +3,7 @@
 namespace zaboy\scheduler\DataStore\Factory;
 
 use Interop\Container\ContainerInterface;
-use zaboy\scheduler\FactoryAbstract;
+use zaboy\rest\FactoryAbstract;
 use zaboy\scheduler\DataStore\Timeline;
 
 class TimelineFactory extends FactoryAbstract
@@ -13,7 +13,7 @@ class TimelineFactory extends FactoryAbstract
      *
      * {@inherit}
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new Timeline();
     }

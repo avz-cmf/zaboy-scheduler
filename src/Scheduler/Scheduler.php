@@ -13,9 +13,9 @@ use Xiag\Rql\Parser\Node\Query\LogicOperator;
 
 class Scheduler
 {
-    const FILTERS_DATASTORE_SERVICE_NAME = 'filters_datastore';
+    const DEFAULT_FILTERS_DATASTORE_SERVICE_NAME = 'filters_datastore';
 
-    const TIMELINE_DATASTORE_SERVICE_NAME = 'timeline_datastore';
+    const DEFAULT_TIMELINE_DATASTORE_SERVICE_NAME = 'timeline_datastore';
 
     /** @var \zaboy\rest\DataStore\DataStoreAbstract $filterDs */
     protected $filterDs;

@@ -5,13 +5,9 @@ namespace zaboy\scheduler\DataStore\Factory;
 use Interop\Container\ContainerInterface;
 use zaboy\rest\DataStore\DataStoreException;
 use zaboy\rest\DataStore\DbTable;
-use zaboy\scheduler\FactoryAbstract;
-use Zend\Db\Metadata;
-use Zend\Db\Sql\Ddl\CreateTable;
+use zaboy\rest\TableGateway\TableManagerMysql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Ddl\Column;
-use Zend\Db\Sql\Ddl\Constraint;
-use Zend\Db\Sql\Sql;
+use \zaboy\rest\FactoryAbstract;
 
 /**
  * Creates if can and returns an instance of class DataStore 'DbTable'
@@ -52,20 +48,53 @@ class FilterDataStoreFactory extends FactoryAbstract
 {
     const TABLE_NAME = 'filters';
 
-    const KEY_TASKS = 'tasks';
 
     /** @var \Zend\Db\Adapter\Adapter $db */
     protected $db;
 
+    protected $tableManageMysql;
+
     /** @var  \zaboy\rest\DataStore\DbTable */
     protected $dataStore;
+
+    protected $tableConfig = [
+        TableManagerMysql::KEY_TABLES_CONFIGS => [
+            self::TABLE_NAME => [
+                'id' => [
+                    'fild_type' => 'Integer',
+                    'fild_params' => [
+                        'options' => [
+                            'autoincrement' => true
+                        ],
+                    ],
+                ],
+                'rql' => [
+                    'fild_type' => 'Text',
+                    'fild_params' => [],
+                ],
+                'callback' => [
+                    'fild_type' => 'Varchar',
+                    'fild_params' => [
+                        'length' => 255,
+                        'nullable' => false,
+                    ],
+                ],
+                'active' => [
+                    'fild_type' => 'Boolean',
+                    'fild_params' => [
+                        'default' => true
+                    ],
+                ],
+            ],
+        ],
+    ];
 
     /**
      * {@inherit}
      *
      * {@inherit}
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $this->db = $container->has('db') ? $container->get('db') : null;
         if (is_null($this->db)) {
@@ -74,78 +103,20 @@ class FilterDataStoreFactory extends FactoryAbstract
             );
         }
 
-        $hasTable = $this->hasTable();
-        if (!$hasTable) {
-            $this->createTable($container);
+        $tableManager = new TableManagerMysql($this->db, $this->tableConfig);
+
+//        $hasTable = $tableManager->hasTable(self::TABLE_NAME);
+//        if (!$hasTable) {
+        if (!$tableManager->hasTable(self::TABLE_NAME)) {
+            $tableManager->createTable(self::TABLE_NAME, self::TABLE_NAME);
         }
 
         $tableGateway = new TableGateway(self::TABLE_NAME, $this->db);
         $this->dataStore = new DbTable($tableGateway);
-        // Fill table using DbTable DataStore interface
-        if (!$hasTable) {
-            $this->fillTable($container);
-        }
+//        // Fill table using DbTable DataStore interface
+//        if (!$hasTable) {
+//            $this->fillTable($container);
+//        }
         return $this->dataStore;
-    }
-
-    /**
-     * Checks if table exists
-     *
-     * @return bool
-     */
-    protected function hasTable()
-    {
-        $dbMetadata = Metadata\Source\Factory::createSourceFromAdapter($this->db);
-        $tableNames = $dbMetadata->getTableNames();
-        if (in_array(self::TABLE_NAME, $tableNames)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Creates the table
-     *
-     * @param ContainerInterface $serviceLocator
-     */
-    protected function createTable(ContainerInterface $container)
-    {
-        $table = new CreateTable(self::TABLE_NAME);
-
-        $table->addColumn(new Column\Varchar('id', 255));
-        $table->addColumn(new Column\Text('rql'));
-        $table->addColumn(new Column\Varchar('callback', 255));
-        $table->addColumn(new Column\Boolean('active', true, true));
-
-        $table->addConstraint(new Constraint\PrimaryKey('id'));
-
-        // existence of $adapter is assumed
-        $sql = new Sql($this->db);
-        $this->db->query(
-            $sql->buildSqlString($table),
-            \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
-        );
-    }
-
-    /**
-     * Fills table by data from config
-     *
-     * @param ContainerInterface $serviceLocator
-     * @throws DataStoreException
-     */
-    protected function fillTable(ContainerInterface $container)
-    {
-        $config = $container->get('config');
-        // If configs for tasks doesn't exist do nothing
-        if (!isset($config[self::KEY_TASKS])) {
-            return;
-        }
-        $id = $this->dataStore->getIdentifier();
-        foreach ($config[self::KEY_TASKS] as $task) {
-            if (!isset($task[$id])) {
-                throw new DataStoreException("Expected necessary parameter \"{$id}\" in data of filter");
-            }
-            $this->dataStore->create($task);
-        }
     }
 }
