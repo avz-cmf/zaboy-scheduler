@@ -15,6 +15,10 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
 {
     const CLASS_IS_A = '';
 
+    const KEY_CALLBACK = 'callback';
+
+    const KEY_PARAMS = 'params';
+
     /**
      * {@inherit}
      *
@@ -23,14 +27,14 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
-        if (!isset($config['callback'])) {
+        if (!isset($config[self::KEY_CALLBACK])) {
             return false;
         }
-        $config = $config['callback'];
-        if (!isset($config[$requestedName]['class'])) {
+        $config = $config[self::KEY_CALLBACK];
+        if (!isset($config[$requestedName][self::KEY_CLASS])) {
             return false;
         }
-        $requestedClassName = $config[$requestedName]['class'];
+        $requestedClassName = $config[$requestedName][self::KEY_CLASS];
         return is_a($requestedClassName, static::CLASS_IS_A, true);
     }
 
@@ -43,13 +47,13 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
     {
         $this->checkNecessaryParametersInConfig($container, $requestedName);
 
-        $config = $container->get('config')['callback'];
+        $config = $container->get('config')[self::KEY_CALLBACK];
         $serviceConfig = $config[$requestedName];
-        $requestedClassName = $serviceConfig['class'];
-        if (!isset($serviceConfig['params'])) {
+        $requestedClassName = $serviceConfig[self::KEY_CLASS];
+        if (!isset($serviceConfig[self::KEY_PARAMS])) {
             $params = [];
         } else {
-            $params = $serviceConfig['params'];
+            $params = $serviceConfig[self::KEY_PARAMS];
         }
         return new $requestedClassName($params);
     }
@@ -64,13 +68,13 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
     protected function checkNecessaryParametersInConfig(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
-        if (!isset($config['callback'])) {
+        if (!isset($config[self::KEY_CALLBACK])) {
             throw new CallbackException("The config hasn't the part \"callback\" in the application config.");
         }
-        if (!isset($config['callback'][$requestedName])) {
+        if (!isset($config[self::KEY_CALLBACK][$requestedName])) {
             throw new CallbackException("The specified service name for callback \"{$requestedName}\" was not found");
         }
-        if (!isset($config['callback'][$requestedName]['class'])) {
+        if (!isset($config[self::KEY_CALLBACK][$requestedName][self::KEY_CLASS])) {
             throw new CallbackException("The necessary parameter \"class\" for initializing the callback service was not found");
         }
     }

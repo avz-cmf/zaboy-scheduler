@@ -31,14 +31,14 @@ class InstanceAbstractFactory extends AbstractFactoryAbstract
     {
         $this->checkNecessaryParametersInConfig($container, $requestedName);
 
-        $config = $container->get('config')['callback'];
+        $config = $container->get('config')[self::KEY_CALLBACK];
         $serviceConfig = $config[$requestedName];
         // Class of callback object, will be 'zaboy\scheduler\Callback\Instance'
-        $requestedClassName = $serviceConfig['class'];
+        $requestedClassName = $serviceConfig[self::KEY_CLASS];
         // The first parameter which the callback object gets is instance which method it calls
-        $dependencyInstance = $container->get($serviceConfig['params']['instanceServiceName']);
+        $dependencyInstance = $container->get($serviceConfig[self::KEY_PARAMS]['instanceServiceName']);
         // Second parameter is name of method for call
-        $methodName = $serviceConfig['params']['instanceMethodName'];
+        $methodName = $serviceConfig[self::KEY_PARAMS]['instanceMethodName'];
 
         $instance = new $requestedClassName([
             'instance' => $dependencyInstance,

@@ -139,13 +139,13 @@ class DataStoreAbstractFactory extends AbstractFactoryAbstract
     {
         $this->checkNecessaryParametersInConfig($container, $requestedName);
 
-        $config = $container->get('config')['callback'];
+        $config = $container->get('config')[self::KEY_CALLBACK];
         $serviceConfig = $config[$requestedName];
         // Class of callback object, will be 'zaboy\scheduler\Callback\Instance'
-        $requestedClassName = $serviceConfig['class'];
+        $requestedClassName = $serviceConfig[self::KEY_CLASS];
 
         // The parameter which the callback object gets is instance of DataStore
-        $dataStore = $container->get($serviceConfig['params']['data_store']);
+        $dataStore = $container->get($serviceConfig[self::KEY_PARAMS]['data_store']);
 
         $instance = new $requestedClassName([
             'data_store' => $dataStore,
@@ -157,14 +157,14 @@ class DataStoreAbstractFactory extends AbstractFactoryAbstract
     {
         parent::checkNecessaryParametersInConfig($container, $requestedName);
 
-        $config = $container->get('config')['callback'];
+        $config = $container->get('config')[self::KEY_CALLBACK];
         $serviceConfig = $config[$requestedName];
-        if (!isset($serviceConfig['params']['data_store'])) {
+        if (!isset($serviceConfig[self::KEY_PARAMS]['data_store'])) {
             throw new CallbackException("The necessary parameter \"params/data_store\" for initializing the callback
                 service was not found");
         }
-        if (!$container->has($serviceConfig['params']['data_store'])) {
-            throw new CallbackException("The service \"{$serviceConfig['params']['data_store']}\" for datastore
+        if (!$container->has($serviceConfig[self::KEY_PARAMS]['data_store'])) {
+            throw new CallbackException("The service \"{$serviceConfig[self::KEY_PARAMS]['data_store']}\" for datastore
                 initializing was not described in config");
         }
     }

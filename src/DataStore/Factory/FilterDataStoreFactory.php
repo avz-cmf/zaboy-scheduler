@@ -52,6 +52,8 @@ class FilterDataStoreFactory extends FactoryAbstract
 {
     const TABLE_NAME = 'filters';
 
+    const KEY_TASKS = 'tasks';
+
     /** @var \Zend\Db\Adapter\Adapter $db */
     protected $db;
 
@@ -135,11 +137,11 @@ class FilterDataStoreFactory extends FactoryAbstract
     {
         $config = $container->get('config');
         // If configs for tasks doesn't exist do nothing
-        if (!isset($config['tasks'])) {
+        if (!isset($config[self::KEY_TASKS])) {
             return;
         }
         $id = $this->dataStore->getIdentifier();
-        foreach ($config['tasks'] as $task) {
+        foreach ($config[self::KEY_TASKS] as $task) {
             if (!isset($task[$id])) {
                 throw new DataStoreException("Expected necessary parameter \"{$id}\" in data of filter");
             }
