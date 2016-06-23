@@ -85,12 +85,14 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
         $this->tickLog->deleteAll();
         $this->hopLog->deleteAll();
 
+        $totalTime = 3;
         $this->setTicker([
-            'total_time' => 3,
+            'total_time' => $totalTime,
             'step' => 0.1,
             'critical_overtime' => 100,
         ]);
         $this->ticker->start();
+        sleep($totalTime);
 
         $this->assertEquals(30, $this->tickLog->count());
         $this->assertEquals(1, $this->hopLog->count());
@@ -101,11 +103,13 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
         $this->tickLog->deleteAll();
         $this->hopLog->deleteAll();
 
+        $totalTime = 10;
         $this->setTicker([
-            'total_time' => 10,
+            'total_time' => $totalTime,
             'step' => 5,
         ]);
-       $this->ticker->start();
+        $this->ticker->start();
+        sleep($totalTime);
 
         $this->assertEquals(2, $this->tickLog->count());
         $this->assertEquals(1, $this->hopLog->count());
@@ -117,14 +121,16 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     public function test_clearLog()
     {
         // Add limits for log files
+        $totalTime = 3;
         $this->setTicker([
-            'total_time' => 3,
+            'total_time' => $totalTime,
             'step' => 0.1,
             'tick__max_log_rows' => 30,
             'hop__max_log_rows' => 1,
             'critical_overtime' => 100,
         ]);
         $this->ticker->start();
+        sleep($totalTime);
 
         $this->assertEquals(
             30, $this->tickLog->count()

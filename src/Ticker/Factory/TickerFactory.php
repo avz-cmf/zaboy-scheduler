@@ -41,8 +41,7 @@ class TickerFactory extends FactoryAbstract
     {
         $config = $container->get('config')[self::TICKER_SERVICE_NAME];
 
-        $cm = new CallbackManager($container);
-        $cm->get('');
+        $callbackManager = new CallbackManager($container);
 
         if (!isset($config['hop']['callback'])) {
             throw new CallbackException("The necessary parameter \"hop/callback\" does not exist.");
@@ -51,9 +50,9 @@ class TickerFactory extends FactoryAbstract
             throw new CallbackException("The necessary parameter \"tick/callback\" does not exist.");
         }
         /** @var \zaboy\scheduler\Callback\Interfaces\CallbackInterface $hopCallback */
-        $hopCallback = $container->get($config['hop']['callback']);
+        $hopCallback = $callbackManager->get($config['hop']['callback']);
         /** @var \zaboy\scheduler\Callback\Interfaces\CallbackInterface $tickCallback */
-        $tickCallback = $container->get($config['tick']['callback']);
+        $tickCallback = $callbackManager->get($config['tick']['callback']);
 
         $ticker = new Ticker($tickCallback, $hopCallback, $config);
         return $ticker;
