@@ -21,6 +21,9 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     /** @var  \zaboy\scheduler\Ticker\Ticker */
     protected $ticker;
 
+    /** @var  \zaboy\scheduler\FileSystem\FileManagerCsv $fileManager */
+    protected $fileManager;
+
     protected function setTicker($options = [])
     {
         $config = $this->container->get('config')[$this->tickerServiceName];
@@ -35,6 +38,7 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->container = include './config/container.php';
+        $this->fileManager = $this->container->get('file_manager_csv');
         $this->setLogFiles();
         $_SERVER['argv'] = (array) array_shift($_SERVER['argv']);
 
@@ -45,7 +49,20 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     protected function setLogFiles()
     {
         $dataStoreConfig = $this->container->get('config')['dataStore'];
-        // Create log files if they do not exist
+
+        if (!$this->fileManager->has($dataStoreConfig['hop_log_datastore']['filename'])) {
+            $this->fileManager->create(
+                $dataStoreConfig['hop_log_datastore']['filename'],
+                ['id', 'hop_start', 'ttl']
+            );
+        }
+        if (!$this->fileManager->has($dataStoreConfig['tick_log_datastore']['filename'])) {
+            $this->fileManager->create(
+                $dataStoreConfig['tick_log_datastore']['filename'],
+                ['id', 'tick_id', 'step']
+            );
+        }
+        /*// Create log files if they do not exist
         if (!is_file($dataStoreConfig['hop_log_datastore']['filename'])) {
             copy(
                 $dataStoreConfig['hop_log_datastore']['filename'] . '.dist',
@@ -57,7 +74,7 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
                 $dataStoreConfig['tick_log_datastore']['filename'] . '.dist',
                 $dataStoreConfig['tick_log_datastore']['filename']
             );
-        }
+        }*/
     }
 
     /**
