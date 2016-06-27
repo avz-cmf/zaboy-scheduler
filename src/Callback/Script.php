@@ -71,6 +71,9 @@ class Script implements CallbackInterface
     public static function getCallOptions($argv)
     {
         $options = Script::parseCommandLineParameters($argv);
+        if (!isset($options['scriptOptions'])) {
+            return [];
+        }
         $options = Script::decodeParams($options['scriptOptions']);
         return $options;
     }
