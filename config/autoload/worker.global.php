@@ -18,7 +18,7 @@ return [
     ],
     'dataStore' => [
         'pids_datastore' => [
-            'class' => 'zaboy\rest\DataStore\CsvBase',
+            'class' => 'zaboy\rest\DataStore\CsvIntId',
             'filename' => getcwd() . '/test/logs/pids.log',
             'delimiter' => ';',
             'fileConfig' => [

@@ -3,6 +3,7 @@
 namespace zaboy\scheduler\Callback;
 
 use zaboy\rest\DataStore\DataStoreAbstract;
+use zaboy\scheduler\DataStore\UTCTime;
 
 /**
  * Class Worker
@@ -136,13 +137,13 @@ class Worker extends Script
         }
         $pId = intval($output);
 
-//        $itemData = [
-//            'pid' => $pId,
-//            'startedAt' => UTCTime::getUTCTimestamp(),
-//            'scriptName' => "Worker: ",
-//            'timeout' => 30
-//        ];
-//        $this->dataStore->create($itemData);
+        $itemData = [
+            'pid' => $pId,
+            'startedAt' => UTCTime::getUTCTimestamp(),
+            'scriptName' => "Worker: ",
+            'timeout' => 30
+        ];
+        $this->dataStore->create($itemData);
         return $pId;
     }
 
