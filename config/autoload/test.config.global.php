@@ -96,6 +96,12 @@ return [
                 'script_name' => 'src/Callback/Examples/tick.php',
             ],
         ],
+        'test_scriptproxy_callback' => [
+            'class' => 'zaboy\scheduler\Callback\ScriptProxy',
+            'params' => [
+                'rpc_callback' => 'script_example_tick_callback'
+            ]
+        ]
     ],
 
 

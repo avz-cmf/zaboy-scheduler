@@ -2,6 +2,8 @@
 
 namespace zaboy\test\scheduler\Scheduler;
 
+use zaboy\rest\DataStore\DbTable;
+use zaboy\rest\DataStore\Memory;
 use zaboy\scheduler\Ticker\Ticker;
 
 class SchedulerTest extends \PHPUnit_Framework_TestCase
@@ -84,7 +86,8 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
             $this->setTicker()
                 ->start();
         } catch (\Exception $e) {
-            throw new \zaboy\scheduler\Scheduler\SchedulerException($e->getMessage(), $e->getCode());
+            $exceptionClass = get_class($e);
+            throw new $exceptionClass($e->getMessage(), $e->getCode());
         } finally {
             $this->filterDs->delete($item['id']);
         }

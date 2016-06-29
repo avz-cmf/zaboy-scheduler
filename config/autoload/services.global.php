@@ -15,6 +15,7 @@ return [
         'abstract_factories' => [
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\scheduler\Callback\Factory\ScriptAbstractFactory',
+            'zaboy\scheduler\Callback\Factory\ScriptProxyAbstractFactory',
             'zaboy\scheduler\Callback\Factory\StaticMethodAbstarctFactory',
             'zaboy\scheduler\Callback\Factory\InstanceAbstractFactory',
             'Zend\Db\Adapter\AdapterAbstractServiceFactory',

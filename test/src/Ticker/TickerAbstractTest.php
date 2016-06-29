@@ -21,6 +21,9 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     /** @var  \zaboy\scheduler\Ticker\Ticker */
     protected $ticker;
 
+    /** @var  \zaboy\scheduler\FileSystem\FileManagerCsv $fileManager */
+    protected $fileManager;
+
     protected function setTicker($options = [])
     {
         $config = $this->container->get('config')[$this->tickerServiceName];
@@ -35,6 +38,7 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->container = include './config/container.php';
+        $this->fileManager = $this->container->get('file_manager_csv');
         $this->setLogFiles();
         $_SERVER['argv'] = (array) array_shift($_SERVER['argv']);
 
@@ -45,7 +49,20 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     protected function setLogFiles()
     {
         $dataStoreConfig = $this->container->get('config')['dataStore'];
-        // Create log files if they do not exist
+
+        if (!$this->fileManager->has($dataStoreConfig['hop_log_datastore']['filename'])) {
+            $this->fileManager->create(
+                $dataStoreConfig['hop_log_datastore']['filename'],
+                ['id', 'hop_start', 'ttl']
+            );
+        }
+        if (!$this->fileManager->has($dataStoreConfig['tick_log_datastore']['filename'])) {
+            $this->fileManager->create(
+                $dataStoreConfig['tick_log_datastore']['filename'],
+                ['id', 'tick_id', 'step']
+            );
+        }
+        /*// Create log files if they do not exist
         if (!is_file($dataStoreConfig['hop_log_datastore']['filename'])) {
             copy(
                 $dataStoreConfig['hop_log_datastore']['filename'] . '.dist',
@@ -57,7 +74,7 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
                 $dataStoreConfig['tick_log_datastore']['filename'] . '.dist',
                 $dataStoreConfig['tick_log_datastore']['filename']
             );
-        }
+        }*/
     }
 
     /**
@@ -68,12 +85,14 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
         $this->tickLog->deleteAll();
         $this->hopLog->deleteAll();
 
+        $totalTime = 3;
         $this->setTicker([
-            'total_time' => 3,
+            'total_time' => $totalTime,
             'step' => 0.1,
             'critical_overtime' => 100,
         ]);
         $this->ticker->start();
+        sleep($totalTime);
 
         $this->assertEquals(30, $this->tickLog->count());
         $this->assertEquals(1, $this->hopLog->count());
@@ -84,11 +103,13 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
         $this->tickLog->deleteAll();
         $this->hopLog->deleteAll();
 
+        $totalTime = 10;
         $this->setTicker([
-            'total_time' => 10,
+            'total_time' => $totalTime,
             'step' => 5,
         ]);
-       $this->ticker->start();
+        $this->ticker->start();
+        sleep($totalTime);
 
         $this->assertEquals(2, $this->tickLog->count());
         $this->assertEquals(1, $this->hopLog->count());
@@ -100,14 +121,16 @@ abstract class TickerAbstractTest extends \PHPUnit_Framework_TestCase
     public function test_clearLog()
     {
         // Add limits for log files
+        $totalTime = 3;
         $this->setTicker([
-            'total_time' => 3,
+            'total_time' => $totalTime,
             'step' => 0.1,
             'tick__max_log_rows' => 30,
             'hop__max_log_rows' => 1,
             'critical_overtime' => 100,
         ]);
         $this->ticker->start();
+        sleep($totalTime);
 
         $this->assertEquals(
             30, $this->tickLog->count()

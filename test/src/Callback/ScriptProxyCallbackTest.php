@@ -2,7 +2,7 @@
 
 namespace zaboy\test\Callback;
 
-class CallbackAbstractTest extends \PHPUnit_Framework_TestCase
+class ScriptProxyCallbackTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  \Zend\ServiceManager\ServiceManager $container */
     protected $container;
@@ -16,19 +16,19 @@ class CallbackAbstractTest extends \PHPUnit_Framework_TestCase
         $this->log = $this->container->get('tick_log_datastore');
     }
 
-    public function test_ScriptCallback()
+    public function test_scriptProxy()
     {
         // Clear log before testing
         $this->log->deleteAll();
 
         $callbackManager = $this->container->get('callback_manager');
         /** @var \zaboy\scheduler\Callback\Script $scriptCallback */
-        $scriptCallback = $callbackManager->get('script_example_tick_callback');
+        $scriptProxyCallback = $callbackManager->get('test_scriptproxy_callback');
         $options = [
             'param1' => 'value1',
             'param2' => ['value21', 'value22'],
         ];
-        $scriptCallback->call($options);
+        $scriptProxyCallback->call($options);
 
         // Expected that in the log will be one entry
         $item = $this->log->read(1);
