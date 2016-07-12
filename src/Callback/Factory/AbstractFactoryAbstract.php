@@ -35,27 +35,7 @@ abstract class AbstractFactoryAbstract extends \zaboy\rest\AbstractFactoryAbstra
             return false;
         }
         $requestedClassName = $config[$requestedName][self::KEY_CLASS];
-        return is_a($requestedClassName, static::CLASS_IS_A, true);
-    }
-
-    /**
-     * {@inherit}
-     *
-     * {@inherit}
-     */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
-    {
-        $this->checkNecessaryParametersInConfig($container, $requestedName);
-
-        $config = $container->get('config')[self::KEY_CALLBACK];
-        $serviceConfig = $config[$requestedName];
-        $requestedClassName = $serviceConfig[self::KEY_CLASS];
-        if (!isset($serviceConfig[self::KEY_PARAMS])) {
-            $params = [];
-        } else {
-            $params = $serviceConfig[self::KEY_PARAMS];
-        }
-        return new $requestedClassName($params);
+        return $requestedClassName === static::CLASS_IS_A;
     }
 
     /**

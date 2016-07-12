@@ -13,9 +13,10 @@ return [
             'callback_manager' => 'zaboy\scheduler\Callback\Factory\CallbackManagerFactory',
         ],
         'abstract_factories' => [
+            'zaboy\scheduler\Callback\Decorators\Factory\AsyncDecoratorAbstractFactory',
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\scheduler\Callback\Factory\ScriptAbstractFactory',
-            'zaboy\scheduler\Callback\Factory\ScriptProxyAbstractFactory',
+//            'zaboy\scheduler\Callback\Factory\ScriptProxyAbstractFactory',
             'zaboy\scheduler\Callback\Factory\StaticMethodAbstarctFactory',
             'zaboy\scheduler\Callback\Factory\InstanceAbstractFactory',
             'Zend\Db\Adapter\AdapterAbstractServiceFactory',

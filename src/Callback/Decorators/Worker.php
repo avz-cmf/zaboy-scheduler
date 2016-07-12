@@ -37,7 +37,7 @@ use zaboy\scheduler\DataStore\UTCTime;
  *     1 => array("pipe", "w"),
  *     2 => array("pipe", "w"),
  * ];
- * $cmd = "php " . __DIR__ . DIRECTORY_SEPARATOR . "test1.php > /dev/null 2>&1 & echo $!";
+ * $cmd = "php " . __DIR__ . DIRECTORY_SEPARATOR . "test1.php > 1234stdout.log 2 > 1234stderr.log & echo $!";
  * $process = proc_open($cmd, $descriptorSpec, $pipes);
  * $metaInfo = proc_get_status($process);
  * // The PID will be in the pipe of the stdout - in the second (index == 1)
@@ -79,8 +79,6 @@ use zaboy\scheduler\DataStore\UTCTime;
  */
 class Worker extends Script
 {
-    protected $startProcessMethod;
-
     /** @var  \zaboy\rest\DataStore\DataStoreAbstract */
     protected $dataStore;
 
@@ -91,6 +89,7 @@ class Worker extends Script
      */
     public function __construct(array $params = [])
     {
+
         parent::__construct($params);
         if (!isset($params['dataStore']) || !$params['dataStore'] instanceof DataStoreAbstract) {
             throw new CallbackException("Expected necessary parameter \"dataStore\" type of DataStoreAbstract");

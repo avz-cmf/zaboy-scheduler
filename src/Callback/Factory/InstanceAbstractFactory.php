@@ -40,10 +40,7 @@ class InstanceAbstractFactory extends AbstractFactoryAbstract
         // Second parameter is name of method for call
         $methodName = $serviceConfig[self::KEY_PARAMS]['instanceMethodName'];
 
-        $instance = new $requestedClassName([
-            'instance' => $dependencyInstance,
-            'method' => $methodName,
-        ]);
+        $instance = new $requestedClassName($dependencyInstance, $methodName);
         return $instance;
     }
 }

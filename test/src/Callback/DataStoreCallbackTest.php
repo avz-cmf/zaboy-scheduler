@@ -2,14 +2,8 @@
 
 namespace zaboy\test\Callback;
 
-class DataStoreCallbackTest extends \PHPUnit_Framework_TestCase
+class DataStoreCallbackTest extends CallbackAbstractTest
 {
-    /** @var  \Zend\ServiceManager\ServiceManager $container */
-    protected $container;
-
-    /** @var  \zaboy\scheduler\Callback\Interfaces\CallbackInterface */
-    protected $callback;
-
     protected $itemsArrayDefault = [
         1 => ['id' => 1, 'anotherId' => 10, 'fString' => 'val1', 'fFloat' => 400.0004],
         2 => ['id' => 2, 'anotherId' => 20, 'fString' => 'val2', 'fFloat' => 300.003],
@@ -19,8 +13,8 @@ class DataStoreCallbackTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->container = include './config/container.php';
-        $this->callback = $this->container->get('test_datastore_type_of_callbacks');
+        parent::setUp();
+
         /** @var \zaboy\rest\DataStore\DataStoreAbstract $dataStore */
         $dataStore = $this->container->get('datastore_for_test_datastore_type_of_callbacks');
 
@@ -28,6 +22,18 @@ class DataStoreCallbackTest extends \PHPUnit_Framework_TestCase
             $dataStore->create($itemData);
         }
     }
+
+    public function test_call()
+    {
+        $this->assertEquals(1, 1);
+    }
+
+
+    protected function initCallback()
+    {
+        $this->callback = $this->container->get('test_datastore_type_of_callbacks');
+    }
+
 
     public function test_callWithoutOptions()
     {

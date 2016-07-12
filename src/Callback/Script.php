@@ -2,6 +2,7 @@
 
 namespace zaboy\scheduler\Callback;
 
+use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Interfaces\CallbackInterface;
 
 /**
@@ -17,29 +18,32 @@ class Script implements CallbackInterface
 {
     const PARAMETERS_PREFIX = '-';
 
+    const DEFAULT_COMMAND_PREFIX = 'php';
+
     protected $script = null;
 
-    /**
-     * {@inherit}
-     *
-     * {@inherit}
-     */
-    public function __construct(array $params = [])
-    {
-        if (!isset($params['script_name'])) {
-            throw new CallbackException("The necessary parameter \"script_name\" is expected");
-        }
+    protected $commandPrefix = self::DEFAULT_COMMAND_PREFIX;
 
-        $script = $params['script_name'];
-        unset($params['script_name']);
-        if (is_file($script)) {
-            $this->script = $script;
+    /**
+     * Script constructor.
+     *
+     * @param $scriptName
+     * @param string $commandPrefix
+     * @throws CallbackException
+     */
+    public function __construct($scriptName, $commandPrefix)
+    {
+        if (is_file($scriptName)) {
+            $this->script = $scriptName;
         } else {
-            $filename = getcwd() . DIRECTORY_SEPARATOR . $script;
+            $filename = getcwd() . DIRECTORY_SEPARATOR . $scriptName;
             if (!is_file($filename)) {
-                throw new CallbackException("Specified script \"{$script}\" does not exist in path \"" . getcwd() . "\"");
+                throw new CallbackException("Specified script \"{$scriptName}\" does not exist in path \"" . getcwd() . "\"");
             }
             $this->script = $filename;
+        }
+        if ($commandPrefix) {
+            $this->commandPrefix = $commandPrefix;
         }
     }
 
@@ -50,15 +54,17 @@ class Script implements CallbackInterface
      */
     public function call(array $options = [])
     {
-        $cmd = "php " . $this->script;
+        $cmd = $this->commandPrefix . ' ' . $this->script;
         $cmd .= self::makeParamsString(['scriptOptions' => self::encodeParams($options)]);
 
         if (substr(php_uname(), 0, 7) == "Windows"){
-            pclose(popen("start /B ". $cmd, "r"));
+            pclose(popen($cmd, "r"));
         }
         else {
-            exec($cmd . " > /dev/null &");
+            exec($cmd . " > /dev/null");
         }
+//        exec($cmd, $output);
+//        return $output;
     }
 
     /**

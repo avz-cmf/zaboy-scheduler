@@ -2,6 +2,7 @@
 
 namespace zaboy\scheduler\Callback;
 
+use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Interfaces\CallbackInterface;
 
 /**
@@ -17,20 +18,18 @@ class StaticMethod implements CallbackInterface
     protected $method;
 
     /**
-     * {@inherit}
+     * StaticMethod constructor.
      *
-     * {@inherit}
+     * @param callable $method
+     * @throws CallbackException
      */
-    public function __construct(array $params = [])
+    public function __construct(callable $method)
     {
-        if (!isset($params['method'])) {
-            throw new CallbackException("The necessary parameter \"function\" is expected");
-        }
-        $realMethodName = join('::', (array) $params['method']);
-        if (!is_callable($params['method'])) {
+        $realMethodName = join('::', (array) $method);
+        if (!is_callable($realMethodName) || !strpos($realMethodName, '::')) {
             throw new CallbackException("The specified method \"{$realMethodName}\" is not callable or it's not static");
         }
-        $this->method = $params['method'];
+        $this->method = $method;
     }
 
     /**

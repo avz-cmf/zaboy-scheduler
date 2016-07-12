@@ -32,15 +32,11 @@ return [
     'callback' => [
         'hop_callback' => [
             'class' => 'zaboy\scheduler\Callback\Script',
-            'params' => [
-                'script_name' => 'scripts/hop.php',
-            ],
+            'script_name' => 'scripts/hop.php',
         ],
         'tick_callback' => [
             'class' => 'zaboy\scheduler\Callback\Script',
-            'params' => [
-                'script_name' => 'scripts/tick.php',
-            ],
+            'script_name' => 'scripts/tick.php',
         ],
         'schedule_callback' => [
             'class' => 'zaboy\scheduler\Callback\Instance',
@@ -48,6 +44,10 @@ return [
                 'instanceServiceName' => 'scheduler',
                 'instanceMethodName' => 'callback',
             ],
+        ],
+        'async_decorator' => [
+            'class' => '\zaboy\scheduler\Callback\Decorators\AsyncDecorator',
+            'callback' => 'tick_callback',
         ],
     ],
 ];

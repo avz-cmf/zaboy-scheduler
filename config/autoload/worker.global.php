@@ -3,7 +3,7 @@
 return [
     'services' => [
         'abstract_factories' => [
-            'zaboy\scheduler\Callback\Factory\WorkerAbstractFactory',
+//            'zaboy\scheduler\Callback\Factory\WorkerAbstractFactory',
         ],
     ],
     'callback' => [

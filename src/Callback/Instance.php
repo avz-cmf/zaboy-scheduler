@@ -2,6 +2,7 @@
 
 namespace zaboy\scheduler\Callback;
 
+use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Interfaces\CallbackInterface;
 
 /**
@@ -29,27 +30,26 @@ class Instance implements CallbackInterface
     protected $method;
 
     /**
-     * {@inherit}
+     * Instance constructor.
      *
-     * {@inherit}
+     * @param $instance
+     * @param $method
+     * @throws \zaboy\scheduler\Callback\CallbackException
      */
-    public function __construct(array $params = [])
+    public function __construct($instance, $method)
     {
-        if (!isset($params['instance']) || !isset($params['method'])) {
-            throw new CallbackException("The necessary parameters \"instance\" and \"method\" are expected");
-        }
         // Instance must be an object!!
-        $instanceType = gettype($params['instance']);
+        $instanceType = gettype($instance);
         if ($instanceType != 'object') {
-            throw new CallbackException("The parameter \"instance\" must be an object. \"{$instanceType}\" given.");
+            throw new CallbackException("The parameter \$instance must be an object. \"{$instanceType}\" given.");
         }
-        $this->instance = $params['instance'];
-        // Cheks if the specified method exists in instance
-        $methodName = $params['method'];
-        if (!method_exists($this->instance, $methodName)) {
-            throw new CallbackException("Specified method \"{$methodName}\" does not exist in class \"" . get_class($this->instance) . "\"");
+        $this->instance = $instance;
+        // Checks if the specified method exists in instance
+        if (!method_exists($this->instance, $method)) {
+            throw new CallbackException("Specified method \"{$method}\" does not exist in class \""
+                . get_class($this->instance) . "\"");
         }
-        $this->method = $methodName;
+        $this->method = $method;
     }
 
     /**
@@ -59,7 +59,7 @@ class Instance implements CallbackInterface
      */
     public function call(array $options = [])
     {
-        return call_user_func_array([$this->instance, $this->method], $options);
+        return call_user_func([$this->instance, $this->method], $options);
     }
 
 }
