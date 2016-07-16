@@ -46,8 +46,21 @@ return [
             ],
         ],
         'async_decorator' => [
-            'class' => '\zaboy\scheduler\Callback\Decorators\AsyncDecorator',
+            'class' => '\zaboy\scheduler\Callback\Decorators\ScriptDecorator',
             'callback' => 'tick_callback',
+        ],
+    ],
+
+    'common_services' => [
+        'script_broker' => [
+            'dataStore' => 'pids_datastore',
+        ],
+
+        'error_parser' => [
+            'patterns' => [
+                'php' => "/^(PHP\s)?(Fatal|Parse) error:/",
+                'phyton' => "/^Traceback \(most recent call last\):/",
+            ],
         ],
     ],
 ];

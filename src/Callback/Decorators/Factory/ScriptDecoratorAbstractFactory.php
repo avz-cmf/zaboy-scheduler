@@ -6,9 +6,9 @@ use Interop\Container\ContainerInterface;
 use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Factory\AbstractFactoryAbstract;
 
-class AsyncDecoratorAbstractFactory extends AbstractFactoryAbstract
+class ScriptDecoratorAbstractFactory extends AbstractFactoryAbstract
 {
-    const CLASS_IS_A = 'zaboy\scheduler\Callback\Decorators\AsyncDecorator';
+    const CLASS_IS_A = 'zaboy\scheduler\Callback\Decorators\ScriptDecorator';
 
     const KEY_RPC_CALLBACK = 'rpc_callback';
 

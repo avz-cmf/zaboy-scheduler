@@ -10,7 +10,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
     /** @var  \zaboy\rest\DataStore\DataStoreAbstract */
     protected $log;
 
-    /** @var \zaboy\scheduler\Callback\Decorators\AsyncDecorator $decorator */
+    /** @var \zaboy\scheduler\Callback\Decorators\ScriptDecorator $decorator */
     protected $decorator;
 
     protected function setUp()

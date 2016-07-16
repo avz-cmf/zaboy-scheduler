@@ -23,10 +23,12 @@ return [
             'delimiter' => ';',
             'fileConfig' => [
                 'id',
+                'promiseId',
                 'pid',
                 'startedAt',
-                'scriptName',
-                'timeout'
+                'timeout',
+                'stdout',
+                'stderr',
             ],
         ],
     ],

@@ -11,9 +11,11 @@ return [
             'scheduler' => 'zaboy\scheduler\Scheduler\Factory\SchedulerFactory',
             'filters_datastore' => 'zaboy\scheduler\DataStore\Factory\FilterDataStoreFactory',
             'callback_manager' => 'zaboy\scheduler\Callback\Factory\CallbackManagerFactory',
+            'script_broker' => 'zaboy\scheduler\Broker\Factory\ScriptBrokerFactory',
+            'error_parser' => 'zaboy\scheduler\FileSystem\Parser\Factory\ErrorParserFactory'
         ],
         'abstract_factories' => [
-            'zaboy\scheduler\Callback\Decorators\Factory\AsyncDecoratorAbstractFactory',
+            'zaboy\scheduler\Callback\Decorators\Factory\ScriptDecoratorAbstractFactory',
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\scheduler\Callback\Factory\ScriptAbstractFactory',
 //            'zaboy\scheduler\Callback\Factory\ScriptProxyAbstractFactory',
