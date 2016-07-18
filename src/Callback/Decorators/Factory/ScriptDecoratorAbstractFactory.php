@@ -12,6 +12,11 @@ class ScriptDecoratorAbstractFactory extends AbstractFactoryAbstract
 
     const KEY_RPC_CALLBACK = 'rpc_callback';
 
+    /**
+     * {@inherit}
+     *
+     * {@inherit}
+     */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $this->checkNecessaryParametersInConfig($container, $requestedName);
@@ -25,6 +30,9 @@ class ScriptDecoratorAbstractFactory extends AbstractFactoryAbstract
         }
         $callbackServiceName = $serviceConfig[self::KEY_RPC_CALLBACK];
 
-        return new $requestedClassName($callbackServiceName);
+        $scriptBroker = $container->get('script_broker');
+
+        $instance = new $requestedClassName($callbackServiceName, $scriptBroker);
+        return $instance;
     }
 }

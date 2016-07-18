@@ -13,15 +13,13 @@ class ErrorParserFactory extends FactoryAbstract
 
     const KEY_PATTERNS = 'patterns';
 
+    const KEY_ERROR_PARSER = 'error_parser';
+
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config')[self::KEY_COMMON_SERVICES];
 
-        if (!isset($config[$requestedName])) {
-            throw new InvalidArgumentException("The service with name \"{$requestedName}\" wasn't found");
-        }
-
-        $serviceConfig = $config[$requestedName];
+        $serviceConfig = $config[self::KEY_ERROR_PARSER];
         $patterns = $serviceConfig[self::KEY_PATTERNS];
 
         $parser = new ErrorParser($patterns);

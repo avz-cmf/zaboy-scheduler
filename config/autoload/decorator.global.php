@@ -37,6 +37,5 @@ return [
             'method' => ['\zaboy\test\scheduler\Examples\Callback\SimpleClass', 'staticMethodWhichLogsOneRow'],
         ],
     ],
-
-
 ];
+

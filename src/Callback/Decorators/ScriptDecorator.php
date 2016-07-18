@@ -15,13 +15,16 @@ class ScriptDecorator extends Script
      */
     protected $rpcCallback;
 
+    /** @var ScriptBroker $scriptBroker */
+    protected $scriptBroker;
 
     /**
      * ScriptDecorator constructor.
      * @param $rpcCallback
+     * @param ScriptBroker $scriptBroker
      * @throws CallbackException
      */
-    public function __construct($rpcCallback)
+    public function __construct($rpcCallback, ScriptBroker $scriptBroker)
     {
         if (!is_file(self::SCRIPT_NAME)) {
             throw new CallbackException("The handler script \"scriptProxy.php\" does not exist in the folder \"script\"");
@@ -29,10 +32,18 @@ class ScriptDecorator extends Script
         parent::__construct(self::SCRIPT_NAME, null);
 
         $this->rpcCallback = $rpcCallback;
+        $this->scriptBroker = $scriptBroker;
 
         $this->checkEnvironment();
     }
 
+    /**
+     * Checks an environment where this script was run
+     *
+     * It's not allowed to run in Windows
+     *
+     * @throws CallbackException
+     */
     private function checkEnvironment()
     {
         if ('Windows' == substr(php_uname(), 0, 7)) {
@@ -46,6 +57,9 @@ class ScriptDecorator extends Script
         }
     }
 
+    /**
+     * @return string
+     */
     public function getPromiseId()
     {
         return uniqid();
@@ -76,6 +90,6 @@ class ScriptDecorator extends Script
         }
         $pId = intval($output);
 
-        ScriptBroker::setFileInfo($this->getPromiseId(), $pId, $stdOutFilename, $stdErrFilename);
+        $this->scriptBroker->setFileInfo($this->getPromiseId(), $pId, $stdOutFilename, $stdErrFilename);
     }
 }

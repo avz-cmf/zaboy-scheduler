@@ -6,7 +6,6 @@ use Interop\Container\ContainerInterface;
 use zaboy\rest\FactoryAbstract;
 use zaboy\scheduler\Broker\ScriptBroker;
 use zaboy\scheduler\Callback\CallbackException;
-use Zend\Loader\Exception\InvalidArgumentException;
 
 class ScriptBrokerFactory extends FactoryAbstract
 {
@@ -14,22 +13,18 @@ class ScriptBrokerFactory extends FactoryAbstract
 
     const KEY_DATASTORE = 'dataStore';
 
+    const KEY_SCRIPT_BROKER = 'script_broker';
+
     /**
-     * @param ContainerInterface $container
-     * @param $requestedName
-     * @param array|null $options
-     * @return ScriptBroker
-     * @throws CallbackException
+     * {@inherit}
+     *
+     * {@inherit}
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config')[self::KEY_COMMON_SERVICES];
 
-        if (!isset($config[$requestedName])) {
-            throw new InvalidArgumentException("The service with name \"{$requestedName}\" wasn't found");
-        }
-
-        $serviceConfig = $config[$requestedName];
+        $serviceConfig = $config[self::KEY_SCRIPT_BROKER];
         if (!isset($serviceConfig[self::KEY_DATASTORE])) {
             throw new CallbackException("The necessary parameter \"" . self::KEY_DATASTORE
                 . "\" for initializing the callback service was not found");
@@ -40,7 +35,7 @@ class ScriptBrokerFactory extends FactoryAbstract
         }
         $dataStore = $container->get($serviceConfig[self::KEY_DATASTORE]);
 
-        $parser = $container->get('parser');
+        $parser = $container->get('error_parser');
 
         $instance = new ScriptBroker($dataStore, $parser);
         return $instance;

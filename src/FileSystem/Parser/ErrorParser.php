@@ -16,6 +16,13 @@ class ErrorParser
         $this->patterns = $patterns;
     }
 
+    /**
+     * Parses the log file and return a status of a finish of a process and content of its log files
+     *
+     * @param $filename
+     * @return array
+     * @throws \Exception
+     */
     public function parseLog($filename)
     {
         if (!is_file($filename)) {
@@ -37,6 +44,7 @@ class ErrorParser
                 'fatalStatus' => $fatalStatus,
                 'message' => join(PHP_EOL, $fileContent),
             ];
+            unlink($filename);
             return $return;
         } catch (\Exception $e) {
             throw new \Exception("Something went wrong", null, $e);

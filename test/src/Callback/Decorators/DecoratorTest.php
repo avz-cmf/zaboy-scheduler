@@ -7,7 +7,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
     /** @var  \Zend\ServiceManager\ServiceManager $container */
     protected $container;
 
-    /** @var  \zaboy\rest\DataStore\DataStoreAbstract */
+    /** @var  \zaboy\rest\DataStore\DataStoreAbstract $log */
     protected $log;
 
     /** @var \zaboy\scheduler\Callback\Decorators\ScriptDecorator $decorator */
