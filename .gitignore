@@ -3,3 +3,4 @@ vendor
 *.phar
 /nbproject/private/
 nbproject
+/www/test*.php
