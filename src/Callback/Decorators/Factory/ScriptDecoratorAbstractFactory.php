@@ -5,6 +5,7 @@ namespace zaboy\scheduler\Callback\Decorators\Factory;
 use Interop\Container\ContainerInterface;
 use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Factory\AbstractFactoryAbstract;
+use zaboy\scheduler\FileSystem\CommandLineWorker;
 
 class ScriptDecoratorAbstractFactory extends AbstractFactoryAbstract
 {
@@ -32,7 +33,9 @@ class ScriptDecoratorAbstractFactory extends AbstractFactoryAbstract
 
         $scriptBroker = $container->get('script_broker');
 
-        $instance = new $requestedClassName($callbackServiceName, $scriptBroker);
+        $commandLineWorker = new CommandLineWorker();
+
+        $instance = new $requestedClassName($callbackServiceName, $scriptBroker, $commandLineWorker);
         return $instance;
     }
 }

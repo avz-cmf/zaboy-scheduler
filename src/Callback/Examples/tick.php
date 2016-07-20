@@ -3,9 +3,11 @@
 chdir(getcwd());
 require './vendor/autoload.php';
 
-use \zaboy\scheduler\Callback\Script;
+use \zaboy\scheduler\FileSystem\CommandLineWorker;
+use \zaboy\scheduler\DataStore\UTCTime;
 
-$options = Script::getCallOptions($_SERVER['argv']);
+$commandLineWorker = new CommandLineWorker();
+$options = $commandLineWorker->getCallOptions($_SERVER['argv']);
 
 $serviceName = 'tick_log_datastore';
 
@@ -17,7 +19,7 @@ if (!$container->has($serviceName)) {
 $log = $container->get('tick_log_datastore');
 
 $itemData = [
-    'tick_id' => \zaboy\scheduler\DataStore\UTCTime::getUTCTimestamp(),
+    'tick_id' => UTCTime::getUTCTimestamp(),
     'step' => print_r($options, 1),
 ];
 $log->create($itemData);

@@ -61,7 +61,7 @@ class ScriptBrokerTest extends \PHPUnit_Framework_TestCase
 
     public function test_checkProcess()
     {
-        // Let processes finish
+        // Let finish to processes
         sleep(2);
         /** @var \zaboy\scheduler\Broker\ScriptBroker $broker */
         $broker = $this->container->get('script_broker');

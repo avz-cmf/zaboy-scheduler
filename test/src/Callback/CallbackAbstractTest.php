@@ -17,12 +17,13 @@ abstract class CallbackAbstractTest extends \PHPUnit_Framework_TestCase
     {
         $this->container = include './config/container.php';
         $this->log = $this->container->get('tick_log_datastore');
+        $this->log->deleteAll();
         $this->initCallback();
     }
 
     protected function tearDown()
     {
-        $this->log->deleteAll();
+//        $this->log->deleteAll();
     }
 
     abstract protected function initCallback();

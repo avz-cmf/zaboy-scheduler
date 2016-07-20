@@ -4,9 +4,11 @@ namespace zaboy\scheduler\Callback\Decorators;
 
 use zaboy\scheduler\Broker\ScriptBroker;
 use zaboy\scheduler\Callback\CallbackException;
-use zaboy\scheduler\Callback\Script;
+use zaboy\scheduler\Callback\Decorators\Interfaces\AsyncDecoratorInterface;
+use zaboy\scheduler\FileSystem\CommandLineWorker;
+use zaboy\scheduler\FileSystem\ScriptWorker;
 
-class ScriptDecorator extends Script
+class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
 {
     const SCRIPT_NAME = 'scripts/scriptProxy.php';
 
@@ -18,16 +20,21 @@ class ScriptDecorator extends Script
     /** @var ScriptBroker $scriptBroker */
     protected $scriptBroker;
 
+    /** @var  CommandLineWorker $commandLineWorker */
+    protected $commandLineWorker;
+
     /**
      * ScriptDecorator constructor.
+     *
      * @param $rpcCallback
      * @param ScriptBroker $scriptBroker
+     * @param CommandLineWorker $commandLineWorker
      * @throws CallbackException
      */
-    public function __construct($rpcCallback, ScriptBroker $scriptBroker)
+    public function __construct($rpcCallback, ScriptBroker $scriptBroker, CommandLineWorker $commandLineWorker)
     {
         if (!is_file(self::SCRIPT_NAME)) {
-            throw new CallbackException("The handler script \"scriptProxy.php\" does not exist in the folder \"script\"");
+            throw new CallbackException('The handler script "scriptProxy.php" does not exist in the folder "script"');
         }
         parent::__construct(self::SCRIPT_NAME, null);
 
@@ -35,6 +42,7 @@ class ScriptDecorator extends Script
         $this->scriptBroker = $scriptBroker;
 
         $this->checkEnvironment();
+        $this->commandLineWorker = $commandLineWorker;
     }
 
     /**
@@ -60,29 +68,31 @@ class ScriptDecorator extends Script
     /**
      * @return string
      */
-    public function getPromiseId()
+    public function getPromise()
     {
         return uniqid();
     }
 
     /**
-     * {@inherit}
-     *
-     * {@inherit}
+     * @param array $parameters
+     * @return void|\zaboy\async\Promise\Interfaces\PromiseInterface
+     * @throws CallbackException
      */
-    public function call(array $options = [])
+    public function asyncCall(array $parameters = [])
     {
         // Merge the options from config with passed options
-        $options = array_merge(['rpc_callback' => $this->rpcCallback], $options);
+        /** @var array|null $parameters */
+        $options = array_merge(['rpc_callback' => $this->rpcCallback], (array) $parameters);
 
         // Files names for stdout and stderr
         $stdOutFilename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('stdout_', 1);
         $stdErrFilename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('stderr_', 1);
 
         $cmd = $this->commandPrefix . ' ' . $this->script;
-        $cmd .= Script::makeParamsString(['scriptOptions' => self::encodeParams($options)]);
+        $cmd .= $this->commandLineWorker->makeParamsString([
+            'scriptOptions' => $this->commandLineWorker->encodeParams($options)
+        ]);
         $cmd .= "  1>{$stdOutFilename} 2>{$stdErrFilename} & echo $!";
-
         $output = trim(shell_exec($cmd));
         if (!is_numeric($output)) {
             throw new CallbackException("The output of the script is ambiguous."
@@ -90,6 +100,8 @@ class ScriptDecorator extends Script
         }
         $pId = intval($output);
 
-        $this->scriptBroker->setFileInfo($this->getPromiseId(), $pId, $stdOutFilename, $stdErrFilename);
+        $this->scriptBroker->setFileInfo($this->getPromise(), $pId, $stdOutFilename, $stdErrFilename);
     }
+
+
 }

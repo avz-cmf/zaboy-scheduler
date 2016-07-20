@@ -12,7 +12,8 @@ return [
             'filters_datastore' => 'zaboy\scheduler\DataStore\Factory\FilterDataStoreFactory',
             'callback_manager' => 'zaboy\scheduler\Callback\Factory\CallbackManagerFactory',
             'script_broker' => 'zaboy\scheduler\Broker\Factory\ScriptBrokerFactory',
-            'error_parser' => 'zaboy\scheduler\FileSystem\Parser\Factory\ErrorParserFactory'
+            'error_parser' => 'zaboy\scheduler\FileSystem\Parser\Factory\ErrorParserFactory',
+            'MySqlPromiseAdapter' => 'zaboy\async\Promise\Factory\Adapter\MySqlAdapterFactory',
         ],
         'abstract_factories' => [
             'zaboy\scheduler\Callback\Decorators\Factory\ScriptDecoratorAbstractFactory',

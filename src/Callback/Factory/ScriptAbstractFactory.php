@@ -4,6 +4,8 @@ namespace zaboy\scheduler\Callback\Factory;
 use Interop\Container\ContainerInterface;
 use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Script;
+use zaboy\scheduler\FileSystem\CommandLineWorker;
+use zaboy\scheduler\FileSystem\ScriptWorker;
 
 /**
  * Creates if can and returns an instance of class 'Callback\Script'
@@ -50,7 +52,9 @@ class ScriptAbstractFactory extends AbstractFactoryAbstract
 
         $commandPrefix = (isset($serviceConfig[self::KEY_COMMAND_PREFIX]) ?: Script::DEFAULT_COMMAND_PREFIX);
 
-        return new $requestedClassName($scriptName, $commandPrefix);
+        $commandLineWorker = new CommandLineWorker();
+
+        return new $requestedClassName($scriptName, $commandPrefix, $commandLineWorker);
     }
 
 
