@@ -54,15 +54,11 @@ return [
     'callback' => [
         'script_hop_callback' => [
             'class' => 'zaboy\scheduler\Callback\Script',
-            'params' => [
-                'script_name' => 'scripts/hop.php',
-            ],
+            'script_name' => 'scripts/hop.php',
         ],
         'script_tick_callback' => [
             'class' => 'zaboy\scheduler\Callback\Script',
-            'params' => [
-                'script_name' => 'scripts/tick.php',
-            ],
+            'script_name' => 'scripts/tick.php',
         ],
         'staticmethod_hop_callback' => [
             'class' => 'zaboy\scheduler\Callback\StaticMethod',
@@ -92,16 +88,14 @@ return [
         ],
         'script_example_tick_callback' => [
             'class' => 'zaboy\scheduler\Callback\Script',
-            'params' => [
-                'script_name' => 'src/Callback/Examples/tick.php',
-            ],
+            'script_name' => 'src/Callback/Examples/tick.php',
         ],
         'test_scriptproxy_callback' => [
             'class' => 'zaboy\scheduler\Callback\ScriptProxy',
             'params' => [
                 'rpc_callback' => 'script_example_tick_callback'
             ]
-        ]
+        ],
     ],
 
 

@@ -106,3 +106,13 @@
 3. `php run.php -total_time 30 -step 1 -tick_callback mytick.php -hop_callback myhop.php`<br />
 запустит тикер на 30 секунд с шагом 1 секунда. Выполняться будут указанные скрипты, которые должны находиться 
 в папке script, находящейся в корне приложения, использующего эту библиотеку (!!).
+
+4. Запуск из кода:
+
+        // some php file
+        $options = [...];
+        
+        // somewhere here $tickCallback and $hopCallback are created
+        
+        $ticker = new Ticker($tickCallback, $hopCallback, $options);
+        $ticker->start();

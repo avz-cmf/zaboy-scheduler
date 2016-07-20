@@ -32,21 +32,34 @@ return [
     'callback' => [
         'hop_callback' => [
             'class' => 'zaboy\scheduler\Callback\Script',
-            'params' => [
-                'script_name' => 'scripts/hop.php',
-            ],
+            'script_name' => 'scripts/hop.php',
         ],
         'tick_callback' => [
             'class' => 'zaboy\scheduler\Callback\Script',
-            'params' => [
-                'script_name' => 'scripts/tick.php',
-            ],
+            'script_name' => 'scripts/tick.php',
         ],
         'schedule_callback' => [
             'class' => 'zaboy\scheduler\Callback\Instance',
             'params' => [
                 'instanceServiceName' => 'scheduler',
                 'instanceMethodName' => 'callback',
+            ],
+        ],
+        'async_decorator' => [
+            'class' => '\zaboy\scheduler\Callback\Decorators\ScriptDecorator',
+            'callback' => 'tick_callback',
+        ],
+    ],
+
+    'common_services' => [
+        'script_broker' => [
+            'dataStore' => 'pids_datastore',
+        ],
+
+        'error_parser' => [
+            'patterns' => [
+                'php' => "/^(PHP\s)?(Fatal|Parse) error:/",
+                'phyton' => "/^Traceback \(most recent call last\):/",
             ],
         ],
     ],

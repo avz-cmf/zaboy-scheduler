@@ -3,11 +3,13 @@
 chdir(getcwd());
 require './vendor/autoload.php';
 
-use zaboy\scheduler\Callback\Script;
+use \zaboy\scheduler\FileSystem\CommandLineWorker;
 use zaboy\scheduler\DataStore\UTCTime;
 use zaboy\rest\DataStore\DataStoreAbstract;
 
-$options = Script::getCallOptions($_SERVER['argv']);
+$commandLineWorker = new CommandLineWorker();
+$options = $commandLineWorker->getCallOptions($_SERVER['argv']);
+
 $delay = isset($options['delay']) ?: 2;
 sleep($delay);
 

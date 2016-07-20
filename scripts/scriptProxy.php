@@ -7,10 +7,12 @@ if (!is_file($path . '/vendor/autoload.php')) {
 chdir($path);
 require $path . '/vendor/autoload.php';
 
-use \zaboy\scheduler\Callback\ScriptProxy;
+use \zaboy\scheduler\FileSystem\CommandLineWorker;
 use \zaboy\scheduler\Callback\CallbackException;
 
-$options = ScriptProxy::getCallOptions($_SERVER['argv']);
+$commandLineWorker = new CommandLineWorker();
+$options = $commandLineWorker->getCallOptions($_SERVER['argv']);
+var_dump($options);
 if (!isset($options['rpc_callback'])) {
     throw new CallbackException("The necessary parameter \"rpc_callback\" does not exist");
 }

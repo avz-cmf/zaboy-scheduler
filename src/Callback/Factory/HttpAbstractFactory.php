@@ -1,6 +1,8 @@
 <?php
 
 namespace zaboy\scheduler\Callback\Factory;
+use Interop\Container\ContainerInterface;
+use zaboy\rest\Interop;
 
 /**
  * Creates if can and returns an instance of class 'Callback\Http'
@@ -34,4 +36,24 @@ namespace zaboy\scheduler\Callback\Factory;
 class HttpAbstractFactory extends AbstractFactoryAbstract
 {
     const CLASS_IS_A = 'zaboy\scheduler\Callback\Http';
+
+    /**
+     * {@inherit}
+     *
+     * {@inherit}
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        $this->checkNecessaryParametersInConfig($container, $requestedName);
+
+        $config = $container->get('config')[self::KEY_CALLBACK];
+        $serviceConfig = $config[$requestedName];
+        $requestedClassName = $serviceConfig[self::KEY_CLASS];
+        if (!isset($serviceConfig[self::KEY_PARAMS])) {
+            $params = [];
+        } else {
+            $params = $serviceConfig[self::KEY_PARAMS];
+        }
+        return new $requestedClassName($params);
+    }
 }

@@ -2,17 +2,10 @@
 
 namespace zaboy\test\Callback;
 
-class HttpCallbackTest extends \PHPUnit_Framework_TestCase
+class HttpCallbackTest extends CallbackAbstractTest
 {
-    /** @var  \Zend\ServiceManager\ServiceManager $container */
-    protected $container;
-
-    /** @var  \zaboy\scheduler\Callback\Interfaces\CallbackInterface */
-    protected $callback;
-
-    protected function setUp()
+    protected function initCallback()
     {
-        $this->container = include './config/container.php';
         $this->callback = $this->container->get('test_http_callback');
     }
 
