@@ -4,7 +4,7 @@ namespace zaboy\scheduler\FileSystem\Parser\Factory;
 
 use Interop\Container\ContainerInterface;
 use zaboy\rest\FactoryAbstract;
-use zaboy\scheduler\FileSystem\Parser\ErrorParser;
+use zaboy\scheduler\FileSystem\Parser\OutputParser;
 use Zend\Loader\Exception\InvalidArgumentException;
 
 class ErrorParserFactory extends FactoryAbstract
@@ -22,7 +22,7 @@ class ErrorParserFactory extends FactoryAbstract
         $serviceConfig = $config[self::KEY_ERROR_PARSER];
         $patterns = $serviceConfig[self::KEY_PATTERNS];
 
-        $parser = new ErrorParser($patterns);
+        $parser = new OutputParser($patterns);
         return $parser;
     }
 }

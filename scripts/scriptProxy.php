@@ -9,10 +9,12 @@ require $path . '/vendor/autoload.php';
 
 use \zaboy\scheduler\FileSystem\CommandLineWorker;
 use \zaboy\scheduler\Callback\CallbackException;
+use zaboy\async\Promise\Adapter\MySqlPromiseAdapter;
+use zaboy\async\Promise\PromiseClient;
 
 $commandLineWorker = new CommandLineWorker();
 $options = $commandLineWorker->getCallOptions($_SERVER['argv']);
-var_dump($options);
+
 if (!isset($options['rpc_callback'])) {
     throw new CallbackException("The necessary parameter \"rpc_callback\" does not exist");
 }
@@ -24,10 +26,8 @@ $container = include './config/container.php';
 /** @var zaboy\scheduler\Callback\CallbackManager $callbackManager */
 $callbackManager = $container->get('callback_manager');
 
-if (!$callbackManager->has($callbackServiceName)) {
-    throw new CallbackException("The specified service name for callback \"{$callbackServiceName}\" was not found");
-}
+/** @var MySqlPromiseAdapter $mySqlPromiseAdapter */
+$mySqlPromiseAdapter = $container->get('MySqlPromiseAdapter');
+$options['promise'] = new PromiseClient($mySqlPromiseAdapter, $options['promise']);
 
-/** @var zaboy\scheduler\Callback\Interfaces\CallbackInterface $callback */
-$callback = $callbackManager->get($callbackServiceName);
-$callback->call($options);
+$callbackManager->{$callbackServiceName}($options);

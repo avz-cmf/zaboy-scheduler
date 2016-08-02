@@ -2,7 +2,7 @@
 
 namespace zaboy\scheduler\FileSystem\Parser;
 
-class ErrorParser
+class OutputParser
 {
     protected $patterns;
 
@@ -23,7 +23,7 @@ class ErrorParser
      * @return array
      * @throws \Exception
      */
-    public function parseLog($filename)
+    public function parseFile($filename)
     {
         if (!is_file($filename)) {
             throw new \Exception("The file doesn't exist");
