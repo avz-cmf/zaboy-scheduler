@@ -51,10 +51,10 @@ class ScriptAbstractFactory extends AbstractFactoryAbstract
         $scriptName = $serviceConfig[self::KEY_SCRIPT_NAME];
 
         $commandPrefix = (isset($serviceConfig[self::KEY_COMMAND_PREFIX]) ?: Script::DEFAULT_COMMAND_PREFIX);
-
         $commandLineWorker = new CommandLineWorker();
+        $parser = $container->get('error_parser');
 
-        return new $requestedClassName($scriptName, $commandPrefix, $commandLineWorker);
+        return new $requestedClassName($scriptName, $commandPrefix, $commandLineWorker, $parser);
     }
 
 

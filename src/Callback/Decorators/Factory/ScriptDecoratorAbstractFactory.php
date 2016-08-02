@@ -6,6 +6,7 @@ use Interop\Container\ContainerInterface;
 use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Factory\AbstractFactoryAbstract;
 use zaboy\scheduler\FileSystem\CommandLineWorker;
+use zaboy\async\Promise\Adapter\MySqlPromiseAdapter;
 
 class ScriptDecoratorAbstractFactory extends AbstractFactoryAbstract
 {
@@ -30,12 +31,12 @@ class ScriptDecoratorAbstractFactory extends AbstractFactoryAbstract
             throw new CallbackException("The necessary parameter for decorator \"rpc_callback\" was not found");
         }
         $callbackServiceName = $serviceConfig[self::KEY_RPC_CALLBACK];
-
+        $mySqlPromiseAdapter = $container->get('MySqlPromiseAdapter');
+        $commandLineWorker = new CommandLineWorker();
         $scriptBroker = $container->get('script_broker');
 
-        $commandLineWorker = new CommandLineWorker();
-
-        $instance = new $requestedClassName($callbackServiceName, $scriptBroker, $commandLineWorker);
+        $instance = new $requestedClassName($callbackServiceName, $scriptBroker,
+            $commandLineWorker, $mySqlPromiseAdapter);
         return $instance;
     }
 }

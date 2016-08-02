@@ -31,33 +31,51 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
     public function test_callScript()
     {
         $this->decorator = $this->container->get('test_async_decorator_with_script_callback');
-        $this->decorator->asyncCall([
+        $promise = $this->decorator->asyncCall([
             'tick_id' => time(),
             'step' => 1
         ]);
-        sleep(1);
+        $this->assertEquals(
+            $promise->getState(), $promise::PENDING
+        );
+        sleep(2);
+        $this->assertEquals(
+            $promise->getState(), $promise::FULFILLED
+        );
         $this->assertEquals(1, $this->log->count());
     }
 
     public function test_callInstance()
     {
         $this->decorator = $this->container->get('test_async_decorator_with_instance_callback');
-        $this->decorator->asyncCall([
+        $promise = $this->decorator->asyncCall([
             'tick_id' => time(),
             'step' => 1
         ]);
-        sleep(1);
+        $this->assertEquals(
+            $promise->getState(), $promise::PENDING
+        );
+        sleep(2);
+        $this->assertEquals(
+            $promise->getState(), $promise::FULFILLED
+        );
         $this->assertEquals(1, $this->log->count());
     }
 
     public function test_callStaticMethod()
     {
         $this->decorator = $this->container->get('test_async_decorator_with_staticmethod_callback');
-        $this->decorator->asyncCall([
+        $promise = $this->decorator->asyncCall([
             'tick_id' => time(),
             'step' => 1
         ]);
-        sleep(1);
+        $this->assertEquals(
+            $promise->getState(), $promise::PENDING
+        );
+        sleep(2);
+        $this->assertEquals(
+            $promise->getState(), $promise::FULFILLED
+        );
         $this->assertEquals(1, $this->log->count());
     }
 }
