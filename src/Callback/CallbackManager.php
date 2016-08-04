@@ -54,21 +54,12 @@ class CallbackManager implements ContainerInterface
     public function __call($callbackServiceName, $arguments)
     {
         $arguments = array_shift($arguments);
-
         if (!$this->has($callbackServiceName)) {
             throw new CallbackException("The specified service name for callback \"{$callbackServiceName}\"
                 was not found");
         }
-        /** @var \zaboy\async\Promise\PromiseClient $promise */
-        $promise = $arguments['promise'];
-        unset($arguments['promise']);
         /** @var CallbackInterface $callback */
         $callback = $this->container->get($callbackServiceName);
-        try {
-            $result = $callback->call($arguments);
-            $promise->resolve($result);
-        } catch (\Exception $e) {
-            $promise->reject($e);
-        }
+        return $callback->call($arguments);
     }
 }

@@ -7,8 +7,8 @@ use zaboy\scheduler\Callback\CallbackException;
 use zaboy\scheduler\Callback\Decorators\Interfaces\AsyncDecoratorInterface;
 use zaboy\scheduler\FileSystem\CommandLineWorker;
 use zaboy\scheduler\FileSystem\ScriptWorker;
-use zaboy\async\Promise\Adapter\MySqlPromiseAdapter;
-use zaboy\async\Promise\PromiseClient;
+use zaboy\async\Promise\Store;
+use zaboy\async\Promise\Promise;
 
 class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
 {
@@ -22,8 +22,8 @@ class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
     /** @var ScriptBroker $scriptBroker */
     protected $scriptBroker;
 
-    /** @var MySqlPromiseAdapter $mySqlPromiseAdapter */
-    protected $mySqlPromiseAdapter;
+    /** @var Store $store */
+    protected $store;
 
     /** @var  CommandLineWorker $commandLineWorker */
     protected $commandLineWorker;
@@ -34,11 +34,11 @@ class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
      * @param $rpcCallback
      * @param ScriptBroker $scriptBroker
      * @param CommandLineWorker $commandLineWorker
-     * @param MySqlPromiseAdapter $mySqlPromiseAdapter
+     * @param Store $store
      * @throws CallbackException
      */
     public function __construct($rpcCallback, ScriptBroker $scriptBroker,
-        CommandLineWorker $commandLineWorker, MySqlPromiseAdapter $mySqlPromiseAdapter)
+        CommandLineWorker $commandLineWorker, Store $store)
     {
         if (!is_file(self::SCRIPT_NAME)) {
             throw new CallbackException('The handler script "scriptProxy.php" does not exist in the folder "script"');
@@ -49,7 +49,7 @@ class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
 
         $this->checkEnvironment();
         $this->commandLineWorker = $commandLineWorker;
-        $this->mySqlPromiseAdapter = $mySqlPromiseAdapter;
+        $this->store = $store;
         $this->scriptBroker = $scriptBroker;
     }
 
@@ -75,11 +75,11 @@ class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
 
 
     /**
-     * @return PromiseClient
+     * @return Promise
      */
     public function getPromise()
     {
-        return new PromiseClient($this->mySqlPromiseAdapter);
+        return new Promise($this->store);
     }
 
     /**
@@ -105,7 +105,6 @@ class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
         $cmd .= $this->commandLineWorker->makeParamsString([
             'scriptOptions' => $this->commandLineWorker->encodeParams($options)
         ]);
-
         $cmd .= "  1>{$stdOutFilename} 2>{$stdErrFilename} & echo $!";
         $output = trim(shell_exec($cmd));
         if (!is_numeric($output)) {

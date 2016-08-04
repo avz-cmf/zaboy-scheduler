@@ -6,22 +6,22 @@ use Xiag\Rql\Parser\Node\SortNode;
 use Xiag\Rql\Parser\Query;
 use zaboy\rest\DataStore\Interfaces\DataStoresInterface;
 use zaboy\scheduler\DataStore\UTCTime;
-use zaboy\scheduler\FileSystem\Parser\ErrorParser;
+use zaboy\scheduler\FileSystem\Parser\OutputParser;
 
 class ScriptBroker
 {
     protected $pidDataStore;
 
-    /** @var ErrorParser $parser */
+    /** @var OutputParser $parser */
     protected $parser;
 
     /**
      * ScriptBroker constructor.
      *
      * @param DataStoresInterface $pidDataStore
-     * @param ErrorParser $parser
+     * @param OutputParser $parser
      */
-    public function __construct(DataStoresInterface $pidDataStore, ErrorParser $parser)
+    public function __construct(DataStoresInterface $pidDataStore, OutputParser $parser)
     {
         $this->pidDataStore = $pidDataStore;
         $this->parser = $parser;
@@ -82,8 +82,8 @@ class ScriptBroker
      */
     public function postFinishProcess($row)
     {
-        $errors = $this->parser->parseLog($row['stderr']);
-        $output = $this->parser->parseLog($row['stdout']);
+        $errors = $this->parser->parseFile($row['stderr']);
+        $output = $this->parser->parseFile($row['stdout']);
         if ($errors['fatalStatus']) {
             $this->reject($errors['message']);
         } else {

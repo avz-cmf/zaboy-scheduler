@@ -9,8 +9,8 @@ require $path . '/vendor/autoload.php';
 
 use \zaboy\scheduler\FileSystem\CommandLineWorker;
 use \zaboy\scheduler\Callback\CallbackException;
-use zaboy\async\Promise\Adapter\MySqlPromiseAdapter;
-use zaboy\async\Promise\PromiseClient;
+use zaboy\async\Promise\Store;
+use zaboy\async\Promise\Promise;
 
 $commandLineWorker = new CommandLineWorker();
 $options = $commandLineWorker->getCallOptions($_SERVER['argv']);
@@ -21,13 +21,27 @@ if (!isset($options['rpc_callback'])) {
 $callbackServiceName = $options['rpc_callback'];
 unset($options['rpc_callback']);
 
+
 /** @var Zend\ServiceManager\ServiceManager $container */
 $container = include './config/container.php';
 /** @var zaboy\scheduler\Callback\CallbackManager $callbackManager */
 $callbackManager = $container->get('callback_manager');
 
-/** @var MySqlPromiseAdapter $mySqlPromiseAdapter */
-$mySqlPromiseAdapter = $container->get('MySqlPromiseAdapter');
-$options['promise'] = new PromiseClient($mySqlPromiseAdapter, $options['promise']);
+/** @var Store $store */
+$store = $container->get('Store');
+$promise = new Promise($store, $options['promise']);
+unset($options['promise']);
 
-$callbackManager->{$callbackServiceName}($options);
+try {
+    if ($callbackManager->has($callbackServiceName)) {
+        $result = $callbackManager->{$callbackServiceName}($options);
+    } elseif (is_callable($callbackServiceName)) {
+        $result = call_user_func($callbackServiceName, $options);
+    } else {
+        throw new CallbackException('Specified callback "' . print_r($callbackServiceName) . '" wasn\'t found');
+    }
+    $promise->resolve($result);
+} catch (\Exception $e) {
+    $promise->reject($e);
+}
+

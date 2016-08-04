@@ -57,13 +57,12 @@ class Script extends ScriptWorker implements CallbackInterface
         } else {
             $cmd .= " & echo $!";
             exec($cmd, $output);
-            var_dump($output);
         }
         $errors = $this->parser->parseFile($stdErrFilename);
         $output = $this->parser->parseFile($stdOutFilename);
         if ($errors['fatalStatus']) {
             throw new CallbackException($errors['message']);
         }
-        return $output;
+        return $output['message'];
     }
 }
