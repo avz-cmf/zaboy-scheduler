@@ -23,6 +23,14 @@ return [
             'class' => 'zaboy\scheduler\Callback\Decorators\ScriptDecorator',
             'rpc_callback' => 'test_staticmethod_callback_via_decorator',
         ],
+        'test_async_decorator_with_callable' => [
+            'class' => 'zaboy\scheduler\Callback\Decorators\ScriptDecorator',
+            'rpc_callback' => ['\zaboy\test\scheduler\Examples\Callback\SimpleClass', 'staticMethodWhichLogsOneRow'],
+        ],
+        'test_async_decorator_with_wrong_callable' => [
+            'class' => 'zaboy\scheduler\Callback\Decorators\ScriptDecorator',
+            'rpc_callback' => 'some_any_no',
+        ],
 
 
         'test_instance_callback_via_decorator' => [

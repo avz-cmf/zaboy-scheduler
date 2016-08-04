@@ -78,4 +78,43 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(1, $this->log->count());
     }
+
+
+    public function test_callCallable()
+    {
+        $this->decorator = $this->container->get('test_async_decorator_with_callable');
+        $promise = $this->decorator->asyncCall([
+            'tick_id' => time(),
+            'step' => 1
+        ]);
+        $this->assertEquals(
+            $promise->getState(), $promise::PENDING
+        );
+        sleep(2);
+        $this->assertEquals(
+            $promise->getState(), $promise::FULFILLED
+        );
+        $this->assertEquals(1, $this->log->count());
+    }
+
+
+    public function test_callWrongCallable()
+    {
+        $this->decorator = $this->container->get('test_async_decorator_with_wrong_callable');
+        $promise = $this->decorator->asyncCall([
+            'tick_id' => time(),
+            'step' => 1
+        ]);
+        $this->assertEquals(
+            $promise->getState(), $promise::PENDING
+        );
+        sleep(2);
+        $this->assertEquals(
+            $promise->getState(), $promise::REJECTED
+        );
+        $result = $promise->wait(false);
+        $this->assertInstanceOf(
+            'zaboy\async\Promise\Exception\RejectedException', $result
+        );
+    }
 }
