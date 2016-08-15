@@ -8,7 +8,7 @@ use zaboy\scheduler\Callback\Decorators\Interfaces\AsyncDecoratorInterface;
 use zaboy\scheduler\FileSystem\CommandLineWorker;
 use zaboy\scheduler\FileSystem\ScriptWorker;
 use zaboy\async\Promise\Store;
-use zaboy\async\Promise\Promise;
+use zaboy\async\Promise\Client as Promise;
 
 class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
 {
@@ -93,8 +93,8 @@ class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
         // Merge the options from config with passed options
         /** @var array|null $parameters */
         $options = array_merge(
-            ['rpc_callback' => $this->rpcCallback, 'promise' => $promise->getPromiseId()],
-            (array) $parameters
+            ['rpc_callback' => $this->rpcCallback, 'promise' => $promise->getId()],
+            $parameters
         );
 
         // Files names for stdout and stderr
@@ -113,7 +113,7 @@ class ScriptDecorator extends ScriptWorker implements AsyncDecoratorInterface
         }
         $pId = intval($output);
 
-        $this->scriptBroker->setFileInfo($promise->getPromiseId(), $pId, $stdOutFilename, $stdErrFilename);
+        $this->scriptBroker->setFileInfo($promise->getId(), $pId, $stdOutFilename, $stdErrFilename);
 
         return $promise;
     }
