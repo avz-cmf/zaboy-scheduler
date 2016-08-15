@@ -97,20 +97,4 @@ return [
             ]
         ],
     ],
-
-
-    'tasks' => [
-        'task1' => [
-            'id' => 1,
-            'rql' => 'in(seconds,(3,8,10,15,20,23,33,41,55,59))',
-            'callback' => 'tick_callback',
-            'active' => 1
-        ],
-        'task2' => [
-            'id' => 2,
-            'rql' => 'in(seconds,(4,9,11,16,21,24,34,42,56))',
-            'callback' => 'tick_callback',
-            'active' => 1
-        ],
-    ]
 ];

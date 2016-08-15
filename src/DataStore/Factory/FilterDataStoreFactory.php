@@ -61,28 +61,37 @@ class FilterDataStoreFactory extends FactoryAbstract
         TableManagerMysql::KEY_TABLES_CONFIGS => [
             self::TABLE_NAME => [
                 'id' => [
-                    'fild_type' => 'Integer',
-                    'fild_params' => [
-                        'options' => [
-                            'autoincrement' => true
-                        ],
-                    ],
-                ],
-                'rql' => [
-                    'fild_type' => 'Text',
-                    'fild_params' => [],
-                ],
-                'callback' => [
-                    'fild_type' => 'Varchar',
-                    'fild_params' => [
+                    'field_type' => 'Varchar',
+                    'field_params' => [
                         'length' => 255,
                         'nullable' => false,
                     ],
                 ],
+                'rql' => [
+                    'field_type' => 'Text',
+                    'field_params' => [
+                        'nullable' => true,
+                    ],
+                ],
+                'callback' => [
+                    'field_type' => 'Varchar',
+                    'field_params' => [
+                        'length' => 255,
+                        'nullable' => true,
+                    ],
+                ],
+                'task_class' => [
+                    'field_type' => 'Varchar',
+                    'field_params' => [
+                        'length' => 255,
+                        'nullable' => true,
+                    ],
+                ],
                 'active' => [
-                    'fild_type' => 'Boolean',
-                    'fild_params' => [
-                        'default' => true
+                    'field_type' => 'Boolean',
+                    'field_params' => [
+                        'default' => true,
+                        'nullable' => true,
                     ],
                 ],
             ],
