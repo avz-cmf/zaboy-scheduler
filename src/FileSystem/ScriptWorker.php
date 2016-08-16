@@ -21,6 +21,17 @@ class ScriptWorker
      */
     public function __construct($scriptName, $commandPrefix)
     {
+        if ($scriptName) {
+            $this->setScript($scriptName);
+        }
+        if ($commandPrefix) {
+            $this->commandPrefix = $commandPrefix;
+        }
+    }
+
+
+    public function setScript($scriptName)
+    {
         if (is_file($scriptName)) {
             $this->script = $scriptName;
         } else {
@@ -30,9 +41,6 @@ class ScriptWorker
                     . getcwd() . "\"");
             }
             $this->script = $filename;
-        }
-        if ($commandPrefix) {
-            $this->commandPrefix = $commandPrefix;
         }
     }
 }

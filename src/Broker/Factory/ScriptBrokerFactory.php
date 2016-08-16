@@ -6,6 +6,7 @@ use Interop\Container\ContainerInterface;
 use zaboy\rest\FactoryAbstract;
 use zaboy\scheduler\Broker\ScriptBroker;
 use zaboy\scheduler\Callback\CallbackException;
+use zaboy\async\Promise;
 
 class ScriptBrokerFactory extends FactoryAbstract
 {
@@ -34,10 +35,10 @@ class ScriptBrokerFactory extends FactoryAbstract
                 initializing was not described in config");
         }
         $dataStore = $container->get($serviceConfig[self::KEY_DATASTORE]);
-
         $parser = $container->get('error_parser');
+        $promiseBroker = $container->get(Promise\Factory\BrokerFactory::KEY);
 
-        $instance = new ScriptBroker($dataStore, $parser);
+        $instance = new ScriptBroker($dataStore, $parser, $promiseBroker);
         return $instance;
     }
 }

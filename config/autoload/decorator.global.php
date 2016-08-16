@@ -1,9 +1,14 @@
 <?php
 
+use zaboy\async\Promise;
+
 return [
     'services' => [
         'factories' => [
-            'simple_class' => '\zaboy\test\scheduler\Callback\Factory\SimpleClassFactory'
+            'simple_class' => '\zaboy\test\scheduler\Callback\Factory\SimpleClassFactory',
+            'script_decorator' => 'zaboy\scheduler\Callback\Decorators\Factory\ScriptDecoratorAbstractFactory',
+            Promise\Factory\BrokerFactory::KEY => Promise\Factory\BrokerFactory::class,
+            Promise\Factory\StoreFactory::KEY => Promise\Factory\StoreFactory::class,
         ],
         'abstract_factories' => [
 //            'zaboy\scheduler\Callback\Decorators\Factory\ScriptDecoratorAbstractFactory',
