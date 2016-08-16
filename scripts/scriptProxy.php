@@ -10,7 +10,7 @@ require $path . '/vendor/autoload.php';
 use \zaboy\scheduler\FileSystem\CommandLineWorker;
 use \zaboy\scheduler\Callback\CallbackException;
 use zaboy\async\Promise\Store;
-use zaboy\async\Promise\Promise;
+use zaboy\async\Promise\Client as Promise;
 
 $commandLineWorker = new CommandLineWorker();
 $options = $commandLineWorker->getCallOptions($_SERVER['argv']);

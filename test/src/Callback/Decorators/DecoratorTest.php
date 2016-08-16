@@ -48,10 +48,10 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
     public function test_callInstance()
     {
         $this->decorator = $this->container->get('test_async_decorator_with_instance_callback');
-        $promise = $this->decorator->asyncCall([
+        $promise = $this->decorator->asyncCall([[
             'tick_id' => time(),
             'step' => 1
-        ]);
+        ]]);
         $this->assertEquals(
             $promise->getState(), $promise::PENDING
         );

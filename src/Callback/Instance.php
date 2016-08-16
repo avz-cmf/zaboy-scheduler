@@ -59,7 +59,7 @@ class Instance implements CallbackInterface
      */
     public function call(array $options = [])
     {
-        return call_user_func([$this->instance, $this->method], $options);
+        return call_user_func_array([$this->instance, $this->method], $options);
     }
 
 }
