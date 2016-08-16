@@ -12,10 +12,14 @@ class ScriptBrokerTest extends \PHPUnit_Framework_TestCase
     /** @var  \zaboy\rest\DataStore\DataStoreAbstract $pidsDataStore */
     protected $pidsDataStore;
 
+    /** @var \zaboy\scheduler\Callback\Decorators\ScriptDecorator $decorator */
+    protected $decorator;
+
     protected function setUp()
     {
         $this->container = include './config/container.php';
         $this->pidsDataStore = $this->container->get('pids_datastore');
+        $this->decorator = $this->container->get('script_decorator');
     }
 
     /**
@@ -36,23 +40,29 @@ class ScriptBrokerTest extends \PHPUnit_Framework_TestCase
     public function test_startProcesses()
     {
         /** @var ScriptDecorator $decorator */
-        $decorator = $this->container->get('test_scriptBroker_decorator_critical_error');
-        $decorator->call();
+        $this->decorator->asyncCall([
+            'rpc_callback' => 'test_scriptBroker_script_critical_error',
+        ]);
 
-        $decorator = $this->container->get('test_scriptBroker_decorator_exception');
-        $decorator->call();
+        $this->decorator->asyncCall([
+            'rpc_callback' => 'test_scriptBroker_script_exception',
+        ]);
 
-        $decorator = $this->container->get('test_scriptBroker_decorator_long_work');
-        $decorator->call();
+        $this->decorator->asyncCall([
+            'rpc_callback' => 'test_scriptBroker_script_long_work',
+        ]);
 
-        $decorator = $this->container->get('test_scriptBroker_decorator_normal');
-        $decorator->call();
+        $this->decorator->asyncCall([
+            'rpc_callback' => 'test_scriptBroker_script_normal',
+        ]);
 
-        $decorator = $this->container->get('test_scriptBroker_decorator_normal_with_warning');
-        $decorator->call();
+        $this->decorator->asyncCall([
+            'rpc_callback' => 'test_scriptBroker_script_normal_with_warning',
+        ]);
 
-        $decorator = $this->container->get('test_scriptBroker_decorator_syntax_error');
-        $decorator->call();
+        $this->decorator->asyncCall([
+            'rpc_callback' => 'test_scriptBroker_script_syntax_error',
+        ]);
 
         $this->assertEquals(
             6, $this->pidsDataStore->count()

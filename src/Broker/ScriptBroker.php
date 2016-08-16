@@ -7,6 +7,7 @@ use Xiag\Rql\Parser\Query;
 use zaboy\rest\DataStore\Interfaces\DataStoresInterface;
 use zaboy\scheduler\DataStore\UTCTime;
 use zaboy\scheduler\FileSystem\Parser\OutputParser;
+use zaboy\async\Promise;
 
 class ScriptBroker
 {
@@ -15,16 +16,25 @@ class ScriptBroker
     /** @var OutputParser $parser */
     protected $parser;
 
+    /** @var Promise\Broker $promiseBroker */
+    protected $promiseBroker;
+
     /**
      * ScriptBroker constructor.
      *
      * @param DataStoresInterface $pidDataStore
      * @param OutputParser $parser
      */
-    public function __construct(DataStoresInterface $pidDataStore, OutputParser $parser)
+    public function __construct(DataStoresInterface $pidDataStore, OutputParser $parser, Promise\Broker $promiseBroker)
     {
         $this->pidDataStore = $pidDataStore;
         $this->parser = $parser;
+        $this->promiseBroker = $promiseBroker;
+    }
+
+    public function getPromiseBroker()
+    {
+        return $this->promiseBroker;
     }
 
     public function setFileInfo($promiseId, $pId, $stdOutFilename, $stdErrFilename)
@@ -84,29 +94,12 @@ class ScriptBroker
     {
         $errors = $this->parser->parseFile($row['stderr']);
         $output = $this->parser->parseFile($row['stdout']);
+        $promise = $this->promiseBroker->get($row['promiseId']);
         if ($errors['fatalStatus']) {
-            $this->reject($errors['message']);
+            $promise->reject($errors['message']);
         } else {
-            $this->resolve($output['message'] . PHP_EOL . $errors['message']);
+            $promise->resolve($output['message'] . PHP_EOL . $errors['message']);
         }
-    }
-
-    /**
-     * @param $output
-     * @return mixed
-     */
-    public function resolve($output)
-    {
-        return $output;
-    }
-
-    /**
-     * @param $reason
-     * @return mixed
-     */
-    public function reject($reason)
-    {
-        return $reason;
     }
 
     /**

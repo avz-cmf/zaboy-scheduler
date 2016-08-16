@@ -3,6 +3,7 @@
 namespace zaboy\test\scheduler\Callback\Decorators;
 
 use Xiag\Rql\Parser\Query;
+use \zaboy\scheduler\Callback\Decorators\ScriptDecorator;
 
 class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,6 +21,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         $this->container = include './config/container.php';
         $this->log = $this->container->get('tick_log_datastore');
         $this->log->deleteAll();
+        $this->decorator = $this->container->get('script_decorator');
     }
 
     protected function tearDown()
@@ -30,10 +32,10 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function test_callScript()
     {
-        $this->decorator = $this->container->get('test_async_decorator_with_script_callback');
         $promise = $this->decorator->asyncCall([
+            'rpc_callback' => 'script_tick_callback',
             'tick_id' => time(),
-            'step' => 1
+            'step' => 1,
         ]);
         $this->assertEquals(
             $promise->getState(), $promise::PENDING
@@ -47,11 +49,13 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function test_callInstance()
     {
-        $this->decorator = $this->container->get('test_async_decorator_with_instance_callback');
-        $promise = $this->decorator->asyncCall([[
-            'tick_id' => time(),
-            'step' => 1
-        ]]);
+        $promise = $this->decorator->asyncCall([
+            'rpc_callback' => 'test_instance_callback_via_decorator',
+            [
+                'tick_id' => time(),
+                'step' => 1,
+            ]
+        ]);
         $this->assertEquals(
             $promise->getState(), $promise::PENDING
         );
@@ -64,10 +68,10 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function test_callStaticMethod()
     {
-        $this->decorator = $this->container->get('test_async_decorator_with_staticmethod_callback');
         $promise = $this->decorator->asyncCall([
+            'rpc_callback' => 'test_staticmethod_callback_via_decorator',
             'tick_id' => time(),
-            'step' => 1
+            'step' => 1,
         ]);
         $this->assertEquals(
             $promise->getState(), $promise::PENDING
@@ -82,8 +86,8 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function test_callCallable()
     {
-        $this->decorator = $this->container->get('test_async_decorator_with_callable');
         $promise = $this->decorator->asyncCall([
+            'rpc_callback' => ['\zaboy\test\scheduler\Examples\Callback\SimpleClass', 'staticMethodWhichLogsOneRow'],
             'tick_id' => time(),
             'step' => 1
         ]);
@@ -100,8 +104,8 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function test_callWrongCallable()
     {
-        $this->decorator = $this->container->get('test_async_decorator_with_wrong_callable');
         $promise = $this->decorator->asyncCall([
+            'rpc_callback' => 'some_any_no',
             'tick_id' => time(),
             'step' => 1
         ]);

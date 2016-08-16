@@ -16,7 +16,6 @@ return [
             'Store' => 'zaboy\async\Promise\Factory\StoreFactory',
         ],
         'abstract_factories' => [
-            'zaboy\scheduler\Callback\Decorators\Factory\ScriptDecoratorAbstractFactory',
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\scheduler\Callback\Factory\ScriptAbstractFactory',
 //            'zaboy\scheduler\Callback\Factory\ScriptProxyAbstractFactory',

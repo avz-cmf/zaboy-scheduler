@@ -33,10 +33,10 @@ $promise = new Promise($store, $options['promise']);
 unset($options['promise']);
 
 try {
-    if ($callbackManager->has($callbackServiceName)) {
-        $result = $callbackManager->{$callbackServiceName}($options);
-    } elseif (is_callable($callbackServiceName)) {
+    if (is_callable($callbackServiceName)) {
         $result = call_user_func($callbackServiceName, $options);
+    } elseif ($callbackManager->has($callbackServiceName)) {
+        $result = $callbackManager->{$callbackServiceName}($options);
     } else {
         throw new CallbackException('Specified callback "' . print_r($callbackServiceName) . '" wasn\'t found');
     }
